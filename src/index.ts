@@ -1,9 +1,19 @@
 declare var _: import('lodash').LoDashStatic;
 declare var q: typeof import('q');
 
-// Types
+// Type-safe event emitter
 
-type EventEmitter = import('events').EventEmitter;
+type EventEmitter<
+	Events extends {
+		[K in keyof Events]: (...args: any[]) => void;
+	}
+> = Omit<import('events').EventEmitter, 'on' | 'once' | 'emit'> & {
+	on<K extends keyof Events>(event: K, listener: Events[K]): any;
+	once<K extends keyof Events>(event: K, listener: Events[K]): any;
+	emit<K extends keyof Events>(event: K, ...args: Parameters<Events[K]>): boolean;
+};
+
+// Types
 
 type RoomName = string;
 
@@ -73,13 +83,43 @@ interface WallObject extends RoomObject {
 
 // Main server config
 
+interface UserNotification {
+	message: string;
+	date: number; // From Date.getTime()
+	count: number;
+	type: 'msg' | 'error';
+}
+
+interface BackendEvents {
+	sendUserNotifications: (user: User, messages: UserNotification[]) => void;
+	expressPreConfig: (app: import('express').Application) => void;
+	expressPostConfig: (app: import('express').Application) => void;
+}
+
+type UserSandbox = {
+	run: (code: string) => Promise<string>;
+	set: (name: string, value: any) => Promise<any>;
+	get: (name: string) => Promise<any>;
+	getIsolate: () => import('isolated-vm').Isolate;
+	getContext: () => import('isolated-vm').Context;
+	getGlobal: () => any;
+};
+
+interface EngineEvents {
+	saveRoomHistory: (roomId: RoomName, baseTime: number, result: any) => void;
+	init: (processType: 'main' | 'processor' | 'runner') => void;
+	playerSandbox: (sandbox: UserSandbox, userId: string) => void;
+}
+
+interface CliEvents {
+	cliSandbox: (sandbox: CliSandbox) => void;
+}
+
 interface ServerConfig {
 	backend: {
 		features?: Array<{ name: string; version: number }>;
-		router: {
-			get: (path: string, handler: (request: any, response: any) => void) => void;
-		} & EventEmitter;
-	} & EventEmitter;
+		router: import('express').Router;
+	} & EventEmitter<BackendEvents>;
 	common: {
 		constants: Record<string, any>;
 		storage: {
@@ -94,8 +134,8 @@ interface ServerConfig {
 		};
 		bots: { [name: string]: string };
 	};
-	engine: EventEmitter;
-	cli: CliSandbox & EventEmitter;
+	engine: EventEmitter<EngineEvents>;
+	cli: CliSandbox & EventEmitter<CliEvents>;
 	cronjobs: Record<string, Cronjob>;
 }
 
@@ -156,8 +196,20 @@ interface CliSandbox {
 
 // Admin Utils mod
 
+interface AdminUtilsEvents {
+	/**
+	 * @param config The `serverConfig` block from config.yml
+	 */
+	config: (config: Record<string, any>) => void;
+	/**
+	 * Emitted when a specific config key is updated.
+	 * @param value The new value for the config key
+	 */
+	[K: `config:update:${string}`]: (value: any) => void;
+}
+
 interface ServerConfig {
-	utils?: ConfigAdminUtils & EventEmitter;
+	utils?: ConfigAdminUtils & EventEmitter<AdminUtilsEvents>;
 }
 
 /** AdminUtils mod */
