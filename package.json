@@ -14,6 +14,7 @@
 	],
 	"scripts": {
 		"build": "tsc -p tsconfig.json",
+		"build:watch": "tsc -p tsconfig.json --watch",
 		"format": "npm run format:dist && npm run format:src",
 		"format:dist": "prettier --write 'dist/**/*.js'",
 		"format:src": "prettier --write 'src/**/*.ts'",
