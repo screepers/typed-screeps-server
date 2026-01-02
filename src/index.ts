@@ -117,7 +117,7 @@ interface MapGenerateRoomOptions {
 	/**
 	 * An object with exit coordinates arrays, e.g. {top: [20,21,23], right: [], bottom: [27,28,29,40,41]}, default is random
 	 */
-	exits?: Partial<Record<"top" | "right" | "bottom" | "left", number[]>>;
+	exits?: Partial<Record<'top' | 'right' | 'bottom' | 'left', number[]>>;
 	/**
 	 * The type of generated landscape, a number from 1 to 28, default is random
 	 */
@@ -264,4 +264,3 @@ declare module '@screeps/common' {
 	export function getRoomNameFromXY(x: number, y: number): string;
 	export function calcWorldSize(rooms: Room[]): number;
 }
-
