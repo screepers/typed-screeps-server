@@ -96,6 +96,25 @@ interface BackendEvents {
 	expressPostConfig: (app: import('express').Application) => void;
 }
 
+interface ServerBackend extends EventEmitter<BackendEvents> {
+	features?: Array<{ name: string; version: number }>;
+	router: import('express').Router;
+}
+
+interface ServerCommon {
+	constants: Record<string, any>;
+	storage: {
+		db: any;
+		env: {
+			get(key: string): Promise<string>;
+			set(key: string, value: any): Promise<void>;
+			keys: Record<string, string>;
+		};
+		pubsub: any;
+		resetAllData(): Promise<void>;
+	};
+	bots: { [name: string]: string };
+}
 type UserSandbox = {
 	run: (code: string) => Promise<string>;
 	set: (name: string, value: any) => Promise<any>;
@@ -111,31 +130,13 @@ interface EngineEvents {
 	playerSandbox: (sandbox: UserSandbox, userId: string) => void;
 }
 
-interface CliEvents {
-	cliSandbox: (sandbox: CliSandbox) => void;
-}
+interface ServerEngine extends EventEmitter<EngineEvents> {}
 
 interface ServerConfig {
-	backend: {
-		features?: Array<{ name: string; version: number }>;
-		router: import('express').Router;
-	} & EventEmitter<BackendEvents>;
-	common: {
-		constants: Record<string, any>;
-		storage: {
-			db: any;
-			env: {
-				get(key: string): Promise<string>;
-				set(key: string, value: any): Promise<void>;
-				keys: Record<string, string>;
-			};
-			pubsub: any;
-			resetAllData(): Promise<void>;
-		};
-		bots: { [name: string]: string };
-	};
-	engine: EventEmitter<EngineEvents>;
-	cli: CliSandbox & EventEmitter<CliEvents>;
+	backend: ServerBackend;
+	common: ServerCommon;
+	engine: ServerEngine;
+	cli: CliSandbox;
 	cronjobs: Record<string, Cronjob>;
 }
 
@@ -185,7 +186,11 @@ interface MapCli extends CommonCli {
 	updateTerrainData(): Promise<void>;
 }
 
-interface CliSandbox {
+interface CliEvents {
+	cliSandbox: (sandbox: CliSandbox) => void;
+}
+
+interface CliSandbox extends EventEmitter<CliEvents> {
 	print: (...args: any[]) => void;
 	system: SystemCli;
 	storage: {};
