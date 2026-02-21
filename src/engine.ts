@@ -16,4 +16,24 @@ export interface EngineEvents {
 	playerSandbox: (sandbox: UserSandbox, userId: string) => void;
 }
 
-export interface ServerEngine extends EventEmitter<EngineEvents> {}
+export interface ServerEngine extends EventEmitter<EngineEvents> {
+	registerCustomObjectPrototype: <TPrototype extends Record<string, any> = Record<string, any>>(
+		objectType: string,
+		name: string,
+		opts: {
+			properties?: Record<string, any>;
+			prototypeExtender?: (
+				prototype: TPrototype,
+				scope: {
+					runtimeData: any;
+					intents: any;
+					register: any;
+					globals: any;
+				},
+				deps: { utils: typeof import('@screeps/engine/src/utils.js') }
+			) => void;
+			findConstant?: number;
+			lookConstant?: string;
+		}
+	) => void;
+}

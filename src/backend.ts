@@ -17,4 +17,5 @@ export interface BackendEvents {
 export interface ServerBackend extends EventEmitter<BackendEvents> {
 	features?: Array<{ name: string; version: number }>;
 	router: import('express').Router;
+	customObjectTypes: Record<string, { sidepanel: string }>;
 }
