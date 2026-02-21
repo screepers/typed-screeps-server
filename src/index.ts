@@ -1,13 +1,18 @@
 import './modules';
+import './renderer';
 export * from './admin-utils';
-export * from './backend';
-export * from './cli';
-export * from './common';
-export * from './engine';
 export * from './event-emitter';
-export * from './objects';
-export * from './resources';
-export * from './server';
+export * from './objects/intents';
+export * from './objects/objects';
+export * from './objects/resources';
+export * from './objects/rooms';
+export * from './objects/room_objects';
+export * from './objects/users';
+export * from './server/backend';
+export * from './server/cli';
+export * from './server/common';
+export * from './server/engine';
+export * from './server/server';
 export * from './types';
 
 declare var _: import('lodash').LoDashStatic;

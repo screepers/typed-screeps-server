@@ -6,19 +6,19 @@ export const sharedOpts = tseslint.config(
 	tseslint.configs.base,
 	expectType,
 	// global ignore
-	{ ignores: ["build/*", "eslint.config.*"], },
+	{ ignores: ["dist/*", "eslint.config.*"], },
 );
 
 export default tseslint.config(
 	...sharedOpts,
-	{ files: ['src/**/*.ts', 'dist/screeps-tests.ts'], },
+	{ files: ['src/**/*.ts'], },
 	{
 		languageOptions: {
 			ecmaVersion: 2022,
 			sourceType: "module",
 			parserOptions: {
 				parser: parser,
-				project: ["./tsconfig.json", './dist/tsconfig.json'],
+				project: "./tsconfig.json",
 			},
 		},
 	},

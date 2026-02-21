@@ -1,5 +1,3 @@
-import { Room } from './objects';
-
 declare namespace Tag {
 	const OpaqueTagSymbol: unique symbol;
 
@@ -15,16 +13,6 @@ export interface _HasSId {
 export type Id<T extends _HasSId> = string & Tag.OpaqueTag<T>;
 export type fromId<T> = T extends Id<infer R> ? R : never;
 
-export type RoomName = string & Tag.OpaqueTag<Room>;
-
-export interface RoomPosition {
-	room: RoomName;
-	x: number;
-	y: number;
-}
-
-export interface RoomTerrain {
-	_id: Id<RoomTerrain>;
-	room: RoomName;
-	terrain: string;
-}
+export type Nullable<T> = {
+	[K in keyof T]: T[K] | null;
+};

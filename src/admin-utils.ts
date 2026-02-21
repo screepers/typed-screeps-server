@@ -1,7 +1,7 @@
 // Admin Utils mod
 
 import { EventEmitter } from './event-emitter';
-import { RoomName } from './types';
+import { RoomName } from './objects/rooms';
 
 export interface AdminUtilsEvents {
 	/**

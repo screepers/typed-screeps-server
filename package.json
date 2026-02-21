@@ -4,7 +4,7 @@
 	"description": "Typescript types for the Screeps private server",
 	"types": "./dist/index.d.ts",
 	"files": [
-		"dist/index.d.ts"
+		"dist/**"
 	],
 	"keywords": [
 		"Screeps",
@@ -15,12 +15,9 @@
 	"scripts": {
 		"build": "tsc -p tsconfig.json",
 		"build:watch": "tsc -p tsconfig.json --watch",
-		"format": "npm run format:dist && npm run format:src",
-		"format:dist": "prettier --write 'dist/**/*.js'",
-		"format:src": "prettier --write 'src/**/*.ts'",
-		"test": "npm run build && npm run lint:test",
-		"lint": "eslint -c eslint.config.mjs",
-		"lint:test": "eslint -c eslint.config.test.mjs dist/screeps-tests.ts"
+		"format": "prettier --write 'src/**/*.ts' README.md package.json tsconfig.json .prettierrc.yml",
+		"test": "npm run build && npm run lint",
+		"lint": "eslint -c eslint.config.mjs"
 	},
 	"author": "Etienne Samson <samson.etienne@gmail.com>",
 	"license": "MIT",
@@ -28,19 +25,27 @@
 		"@types/express": "^4.11.1",
 		"@types/lodash": "^3.10.9",
 		"@types/node": "^10.17.60",
+		"@types/pixi.js": "^4.8.9",
 		"@types/q": "^1.5.8",
+		"@types/screeps": "^3.3.8",
 		"eslint": "^9.7.0",
 		"eslint-plugin-expect-type": "^0.4.0",
 		"husky": "^7.0.4",
 		"isolated-vm": "^6.0.2",
 		"lint-staged": "^12.3.8",
-		"prettier": "^2.6.2",
+		"prettier": "^3.8.1",
 		"typescript": "^5.5.0",
 		"typescript-eslint": "^8.38.0"
 	},
 	"dependencies": {
 		"lodash": "^3.10.1",
 		"q": "^1.5.1"
+	},
+	"peerDependencies": {
+		"@types/express": "*",
+		"@types/pixi.js": "*",
+		"@types/q": "*",
+		"@types/screeps": "*"
 	},
 	"lint-staged": {
 		"*.{ts,tsx}": [
