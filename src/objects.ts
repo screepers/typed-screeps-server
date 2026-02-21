@@ -1,7 +1,7 @@
-import { RoomName, RoomPosition } from './types';
+import { Id, RoomName, RoomPosition } from './types';
 
 export interface User {
-	_id: string;
+	_id: Id<User>;
 	// TODO: incomplete
 }
 
@@ -10,8 +10,8 @@ export type DepositType = 'biomass' | 'metal' | 'mist' | 'silicon';
 export type MineralType = 'H' | 'O' | 'Z' | 'Z' | 'K' | 'U' | 'L' | 'X';
 
 export interface Room {
-	_id?: string;
-	name: string;
+	_id: Id<Room>;
+	name: RoomName;
 	status: 'normal' | 'out of borders';
 	bus: boolean;
 	openTime?: number;
@@ -24,7 +24,7 @@ export interface Room {
 }
 
 export interface RoomObject {
-	_id?: string;
+	_id?: Id<RoomObject>;
 	x: number;
 	y: number;
 	room: RoomName;
@@ -32,6 +32,7 @@ export interface RoomObject {
 }
 
 export interface PortalObject extends RoomObject {
+	_id?: Id<PortalObject>;
 	type: 'portal';
 	destination: RoomPosition;
 	unstableDate?: number;
@@ -39,6 +40,7 @@ export interface PortalObject extends RoomObject {
 }
 
 export interface WallObject extends RoomObject {
+	_id?: Id<WallObject>;
 	type: 'constructedWall';
 	newbieWall?: boolean;
 	notifyWhenAttacked?: boolean;
