@@ -23,15 +23,15 @@ export interface Room {
 	powerBankTime: number;
 }
 
-export interface RoomObject {
-	_id?: Id<RoomObject>;
+export interface BaseObject {
+	_id?: Id<BaseObject>;
 	x: number;
 	y: number;
 	room: RoomName;
 	type: string;
 }
 
-export interface PortalObject extends RoomObject {
+export interface PortalObject extends BaseObject {
 	_id?: Id<PortalObject>;
 	type: 'portal';
 	destination: RoomPosition;
@@ -39,7 +39,7 @@ export interface PortalObject extends RoomObject {
 	decayTime?: number;
 }
 
-export interface WallObject extends RoomObject {
+export interface WallObject extends BaseObject {
 	_id?: Id<WallObject>;
 	type: 'constructedWall';
 	newbieWall?: boolean;
