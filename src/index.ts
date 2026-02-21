@@ -6,6 +6,7 @@ export * from './common';
 export * from './engine';
 export * from './event-emitter';
 export * from './objects';
+export * from './resources';
 export * from './server';
 export * from './types';
 

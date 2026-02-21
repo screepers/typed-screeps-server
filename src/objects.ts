@@ -1,13 +1,10 @@
+import { DepositType } from './resources';
 import { Id, RoomName, RoomPosition } from './types';
 
 export interface User {
 	_id: Id<User>;
 	// TODO: incomplete
 }
-
-export type DepositType = 'biomass' | 'metal' | 'mist' | 'silicon';
-
-export type MineralType = 'H' | 'O' | 'Z' | 'Z' | 'K' | 'U' | 'L' | 'X';
 
 export interface Room {
 	_id: Id<Room>;

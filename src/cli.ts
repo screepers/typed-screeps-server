@@ -1,5 +1,5 @@
 import { EventEmitter } from './event-emitter';
-import { MineralType } from './objects';
+import { MineralType } from './resources';
 import { RoomName } from './types';
 
 export interface CommonCli {
