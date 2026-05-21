@@ -45,7 +45,8 @@
 		"@types/express": "*",
 		"@types/pixi.js": "*",
 		"@types/q": "*",
-		"@types/screeps": "*"
+		"@types/screeps": "*",
+		"isolated-vm": "*"
 	},
 	"lint-staged": {
 		"*.{ts,tsx}": [
