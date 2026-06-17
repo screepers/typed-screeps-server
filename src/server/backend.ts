@@ -2,6 +2,7 @@ import { ObjectMetadata } from '@screeps/renderer';
 import { EventEmitter } from '../event-emitter';
 import { User } from '../objects/users';
 import { RoomName } from '../objects/rooms';
+import { IntentName, IntentTransform } from '../objects/intents';
 
 export interface UserNotification {
 	message: string;
@@ -21,6 +22,7 @@ export interface ServerBackend extends EventEmitter<BackendEvents> {
 	router: import('express').Router;
 	onGetRoomHistory(roomName: RoomName, baseTime: number, callback: () => never): never;
 	customObjectTypes: Record<string, { sidepanel: string }>;
+	customIntentTypes: Record<IntentName, { [keyName: string]: IntentTransform }>;
 	historyChunkSize: number;
 	renderer: {
 		resources: Record<string, string>;
