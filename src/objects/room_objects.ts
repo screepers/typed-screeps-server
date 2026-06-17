@@ -18,20 +18,6 @@ export interface CreepObject extends BaseObject {
 	user: UserId;
 	ageTime: number;
 	store: StoreDefinitionUnlimited;
-	// id: Id<Creep>;
-	// get name(): string;
-	// get body(): BodyPart[];
-	// get my(): boolean;
-	// get owner(): { username: string };
-	// get spawning(): any;
-	// get ticksToLive(): number;
-	// get carryCapacity(): number;
-	// get carry(): any;
-	// get store(): any;
-	// get fatigue(): number;
-	// get hits(): number;
-	// get hitsMax(): number;
-	// get saying(): string;
 }
 
 export interface PowerCreepObject extends BaseObject {
