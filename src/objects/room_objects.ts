@@ -65,6 +65,7 @@ export interface NukeObject extends BaseObject {
 	_id?: Id<NukeObject>;
 	type: 'nuke';
 	landTime: number;
+	launchRoomName?: RoomName | string;
 }
 
 export interface EffectDeclaration {
