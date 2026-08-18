@@ -49,6 +49,38 @@ export interface RawNuke extends RawObject {
 	launchRoomName?: RoomName | string;
 }
 
+export interface RawSource extends RawObject {
+	type: 'source';
+}
+
+export interface RawDeposit extends RawObject {
+	type: 'deposit';
+}
+
+export interface RawResource extends RawObject {
+	type: 'energy';
+	resourceType: ResourceConstant;
+}
+
+export interface RawConstructionSite extends RawObject {
+	type: 'constructionSite';
+	structureType: BuildableStructureConstant;
+	user: UserId;
+	progress: number;
+	progressTotal: number;
+	name?: string;
+}
+
+export interface RawTombstone extends RawObject {
+	type: 'tombstone';
+	store: StoreDefinitionUnlimited;
+}
+
+export interface RawRuin extends RawObject {
+	type: 'ruin';
+	store: StoreDefinitionUnlimited;
+}
+
 export interface RawEffectDeclaration {
 	effect: EffectConstant;
 	power: EffectConstant;
@@ -104,6 +136,25 @@ export interface RawStructureLab extends RawOwnedStructure {
 	type: 'lab';
 }
 
+export interface RawStructureSpawn extends RawOwnedStructure {
+	type: 'spawn';
+	name?: string;
+	store: StoreDefinitionUnlimited;
+}
+
+export interface RawStructureExtension extends RawOwnedStructure {
+	type: 'extension';
+	store: StoreDefinitionUnlimited;
+}
+
+export interface RawStructurePowerSpawn extends RawOwnedStructure {
+	type: 'powerSpawn';
+}
+
+export interface RawStructurePowerBank extends RawOwnedStructure {
+	type: 'powerBank';
+}
+
 export interface RawStructureTerminal extends RawOwnedStructure {
 	type: 'terminal';
 	send: { targetRoomName: RoomName } | null;
@@ -121,6 +172,10 @@ export interface RawStructureObjects {
 	RawStructureLab: RoomObjectPair<RawStructureLab, StructureLab>;
 	RawStructureTerminal: RoomObjectPair<RawStructureTerminal, StructureTerminal>;
 	RawStructureRampart: RoomObjectPair<RawStructureRampart, StructureRampart>;
+	RawStructureSpawn: RoomObjectPair<RawStructureSpawn, StructureSpawn>;
+	RawStructureExtension: RoomObjectPair<RawStructureExtension, StructureExtension>;
+	RawStructurePowerSpawn: RoomObjectPair<RawStructurePowerSpawn, StructurePowerSpawn>;
+	RawStructurePowerBank: RoomObjectPair<RawStructurePowerBank, StructurePowerBank>;
 }
 
 export type RawStructure = RawStructureObjects[keyof RawStructureObjects]['raw'];
@@ -134,6 +189,12 @@ export interface RoomObjects extends RawStructureObjects {
 	RawNuke: RoomObjectPair<RawNuke, Nuke>;
 	RawPortal: RoomObjectPair<RawPortal, RoomObject>;
 	RawStructureInvaderCore: RoomObjectPair<RawStructureInvaderCore, StructureInvaderCore>;
+	RawSource: RoomObjectPair<RawSource, Source>;
+	RawDeposit: RoomObjectPair<RawDeposit, Deposit>;
+	RawResource: RoomObjectPair<RawResource, Resource>;
+	RawConstructionSite: RoomObjectPair<RawConstructionSite, ConstructionSite>;
+	RawTombstone: RoomObjectPair<RawTombstone, Tombstone>;
+	RawRuin: RoomObjectPair<RawRuin, Ruin>;
 }
 
 export type RawRoomObject = RoomObjects[keyof RoomObjects]['raw'];

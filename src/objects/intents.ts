@@ -1,11 +1,23 @@
+import { MarketOrder } from './objects';
 import {
 	AnyId,
+	RawConstructionSite,
 	RawCreep,
+	RawDeposit,
+	RawResource,
+	RawMineral,
 	RawPowerCreep,
 	RawRoomObject,
+	RawRuin,
+	RawSource,
 	RawStructure,
 	RawStructureController,
+	RawStructureExtension,
 	RawStructureLab,
+	RawStructurePowerBank,
+	RawStructurePowerSpawn,
+	RawStructureSpawn,
+	RawTombstone,
 } from './raw_objects';
 import { RoomName } from './rooms';
 import { Nullable, RawId } from '../types';
@@ -31,77 +43,102 @@ export type Price = number;
 
 export interface IntentType {
 	notify: { message: UserText; groupInterval: number };
-	createConstructionSite: { roomName: string; x: number; y: number; structureType: string; name: UserString };
+	createConstructionSite: {
+		roomName: RoomName;
+		x: number;
+		y: number;
+		structureType: BuildableStructureConstant;
+		name: UserString;
+	};
 	createFlag: {
-		roomName: string;
+		roomName: RoomName;
 		x: number;
 		y: number;
 		name: UserString;
-		color: number;
-		secondaryColor: number;
+		color: ColorConstant;
+		secondaryColor: ColorConstant;
 	};
-	destroyStructure: { roomName: string; id: string };
-	removeConstructionSite: { roomName: string; id: string };
-	removeFlag: { roomName: string; name: UserString };
-	cancelOrder: { orderId: string };
-	changeOrderPrice: { orderId: string; newPrice: Price };
-	createOrder: { type: string; resourceType: string; price: Price; totalAmount: number; roomName: string };
-	createPowerCreep: { name: UserString; className: string };
-	deal: { orderId: string; amount: number; targetRoomName: string };
-	deletePowerCreep: { id: string; cancel: boolean };
-	extendOrder: { orderId: string; addAmount: number };
-	renamePowerCreep: { id: string; name: UserString };
-	spawnPowerCreep: { id: string; name: UserString };
-	suicidePowerCreep: { id: string };
-	upgradePowerCreep: { id: string; power: number };
+	destroyStructure: { roomName: RoomName; id: RawId<RawStructure> };
+	removeConstructionSite: { roomName: RoomName; id: RawId<RawConstructionSite> };
+	removeFlag: { roomName: RoomName; name: UserString };
+	cancelOrder: { orderId: RawId<MarketOrder> };
+	changeOrderPrice: { orderId: RawId<MarketOrder>; newPrice: Price };
+	createOrder: {
+		type: ORDER_BUY | ORDER_SELL;
+		resourceType: MarketResourceConstant;
+		price: Price;
+		totalAmount: number;
+		roomName: RoomName;
+	};
+	createPowerCreep: { name: UserString; className: PowerClassConstant };
+	deal: { orderId: RawId<MarketOrder>; amount: number; targetRoomName: RoomName };
+	deletePowerCreep: { id: RawId<RawPowerCreep>; cancel: boolean };
+	extendOrder: { orderId: RawId<MarketOrder>; addAmount: number };
+	renamePowerCreep: { id: RawId<RawPowerCreep>; name: UserString };
+	spawnPowerCreep: { id: RawId<RawStructurePowerSpawn>; name: UserString };
+	suicidePowerCreep: { id: RawId<RawPowerCreep> };
+	upgradePowerCreep: { id: RawId<RawPowerCreep>; power: PowerConstant };
 	activateSafeMode: {};
-	attack: { id: string; x: number; y: number };
-	attackController: { id: string };
-	boostCreep: { id: string; bodyPartsCount: number };
-	build: { id: string; x: number; y: number };
+	attack: { id: RawId<RawStructure> | RawId<RawCreep> | RawId<RawPowerCreep>; x: number; y: number };
+	attackController: { id: RawId<RawStructureController> };
+	boostCreep: { id: RawId<RawCreep>; bodyPartsCount: number };
+	build: { id: RawId<RawConstructionSite>; x: number; y: number };
 	cancelSpawning: {};
-	claimController: { id: string };
-	createCreep: { name: UserString; body: BodyPartConstant[]; energyStructures: string[]; directions: number[] };
+	claimController: { id: RawId<RawStructureController> };
+	createCreep: {
+		name: UserString;
+		body: BodyPartConstant[];
+		energyStructures: (RawId<RawStructureSpawn> | RawId<RawStructureExtension>)[];
+		directions: DirectionConstant[];
+	};
 	destroy: {};
-	dismantle: { id: string };
-	drop: { amount: number; resourceType: string };
-	enableRoom: { id: string };
-	generateSafeMode: { id: string };
-	harvest: { id: string };
-	heal: { id: RawId<RawCreep>; x: number; y: number };
+	dismantle: { id: RawId<RawStructure> };
+	drop: { amount: number; resourceType: ResourceConstant };
+	enableRoom: { id: RawId<RawStructureController> };
+	generateSafeMode: { id: RawId<RawStructureController> };
+	harvest: { id: RawId<RawSource> | RawId<RawMineral> | RawId<RawDeposit> };
+	heal: { id: RawId<RawCreep> | RawId<RawPowerCreep>; x: number; y: number };
 	launchNuke: { x: number; y: number; roomName: RoomName };
-	move: { id: RawId<RawCreep> | RawId<RawPowerCreep>; direction: number };
+	move: { id: RawId<RawCreep> | RawId<RawPowerCreep>; direction: DirectionConstant };
 	notifyWhenAttacked: { enabled: boolean };
 	observeRoom: { roomName: RoomName };
-	pickup: { id: string };
+	pickup: { id: RawId<RawResource> };
 	processPower: {};
-	produce: { resourceType: string; amount: number };
+	produce: { resourceType: ResourceConstant; amount: number };
 	pull: { id: RawId<RawCreep> };
-	rangedAttack: { id: RawId<RawCreep> };
-	rangedHeal: { id: RawId<RawCreep> };
+	rangedAttack: { id: RawId<RawStructure> | RawId<RawCreep> | RawId<RawPowerCreep> };
+	rangedHeal: { id: RawId<RawCreep> | RawId<RawPowerCreep> };
 	rangedMassAttack: {};
 	recycleCreep: { id: RawId<RawCreep> };
-	renew: { id: string };
+	renew: { id: RawId<RawStructurePowerSpawn> | RawId<RawStructurePowerBank> };
 	renewCreep: { id: RawId<RawCreep> };
 	reverseReaction: { lab1: RawId<RawStructureLab>; lab2: RawId<RawStructureLab> };
 	runReaction: { lab1: RawId<RawStructureLab>; lab2: RawId<RawStructureLab> };
 	remove: {};
 	repair: { id: RawId<RawStructure>; x: number; y: number };
-	reserveController: { id: string };
+	reserveController: { id: RawId<RawStructureController> };
 	say: { message: UserString; isPublic: boolean };
-	send: { targetRoomName: string; resourceType: string; amount: number; description: UserString };
-	setColor: { color: number; secondaryColor: number };
-	setPosition: { x: number; y: number; roomName: string };
+	send: { targetRoomName: RoomName; resourceType: ResourceConstant; amount: number; description: UserString };
+	setColor: { color: ColorConstant; secondaryColor: ColorConstant };
+	setPosition: { x: number; y: number; roomName: RoomName };
 	setPublic: { isPublic: boolean };
-	setSpawnDirections: { directions: number[] };
+	setSpawnDirections: { directions: DirectionConstant[] };
 	signController: { id: RawId<RawStructureController>; sign: UserString };
 	suicide: {};
-	transfer: { id: RawId<RawRoomObject>; amount: number; resourceType: string };
+	transfer: {
+		id: RawId<RawStructure> | RawId<RawCreep> | RawId<RawPowerCreep>;
+		amount: number;
+		resourceType: ResourceConstant;
+	};
 	unboostCreep: { id: RawId<RawCreep> };
 	unclaim: {};
-	upgradeController: { id: string };
-	usePower: { power: number; id: string };
-	withdraw: { id: RawId<RawRoomObject>; amount: number; resourceType: string };
+	upgradeController: { id: RawId<RawStructureController> };
+	usePower: { power: PowerConstant; id?: RawId<RawPowerCreep> };
+	withdraw: {
+		id: RawId<RawStructure> | RawId<RawTombstone> | RawId<RawRuin>;
+		amount: number;
+		resourceType: ResourceConstant;
+	};
 }
 
 export type IntentName = keyof IntentType;
@@ -136,7 +173,12 @@ export type IntentId = 'room' | 'notify' | 'global' | AnyId<RawRoomObject>;
 export type IntentData<Type extends IntentName> = IntentType[Type];
 
 export interface IntentBuilder {
-	list: Record<string, Partial<Nullable<IntentType>>>;
+	list: {
+		[K in IntentId]?: K extends 'notify' ? NotifyIntent[]
+		: K extends 'room' ? { [N in keyof RoomIntents]?: IntentType[N][] }
+		: K extends 'global' ? { [N in keyof GlobalIntents]?: IntentType[N][] }
+		: Partial<IntentType>;
+	};
 	cpu: number;
 	set<Name extends IntentName>(id: IntentId, name: Name, data: IntentData<Name>): void;
 	push<Name extends IntentName>(name: Name, data: IntentData<Name>, maxLen?: number): boolean;
