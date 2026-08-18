@@ -1,8 +1,8 @@
 {
-	"typescript.tsdk": "node_modules/typescript/lib",
 	"editor.formatOnSave": true,
 	"search.exclude": {
 		"**/node_modules": true,
 		"**/dist": true,
 	},
+	"js/ts.tsdk.path": "node_modules/typescript/lib",
 }
