@@ -1,12 +1,14 @@
 import {
-	StructureControllerObject,
-	CreepObject,
-	StructureLabObject,
-	PowerCreepObject,
-	RoomObject,
-	StructureObject,
-} from './room_objects';
-import { Id, Nullable } from '../types';
+	AnyId,
+	RawCreep,
+	RawPowerCreep,
+	RawRoomObject,
+	RawStructure,
+	RawStructureController,
+	RawStructureLab,
+} from './raw_objects';
+import { RoomName } from './rooms';
+import { Nullable, RawId } from '../types';
 
 export interface UserRuntimeData {
 	userObjects: Record<string, any>;
@@ -66,25 +68,25 @@ export interface IntentType {
 	enableRoom: { id: string };
 	generateSafeMode: { id: string };
 	harvest: { id: string };
-	heal: { id: Id<CreepObject>; x: number; y: number };
+	heal: { id: RawId<RawCreep>; x: number; y: number };
 	launchNuke: { x: number; y: number; roomName: RoomName };
-	move: { id: Id<CreepObject | PowerCreepObject>; direction: number };
+	move: { id: RawId<RawCreep> | RawId<RawPowerCreep>; direction: number };
 	notifyWhenAttacked: { enabled: boolean };
 	observeRoom: { roomName: RoomName };
 	pickup: { id: string };
 	processPower: {};
 	produce: { resourceType: string; amount: number };
-	pull: { id: Id<CreepObject> };
-	rangedAttack: { id: Id<CreepObject> };
-	rangedHeal: { id: Id<CreepObject> };
+	pull: { id: RawId<RawCreep> };
+	rangedAttack: { id: RawId<RawCreep> };
+	rangedHeal: { id: RawId<RawCreep> };
 	rangedMassAttack: {};
-	recycleCreep: { id: Id<CreepObject> };
+	recycleCreep: { id: RawId<RawCreep> };
 	renew: { id: string };
-	renewCreep: { id: Id<CreepObject> };
-	reverseReaction: { lab1: Id<StructureLabObject>; lab2: Id<StructureLabObject> };
-	runReaction: { lab1: Id<StructureLabObject>; lab2: Id<StructureLabObject> };
+	renewCreep: { id: RawId<RawCreep> };
+	reverseReaction: { lab1: RawId<RawStructureLab>; lab2: RawId<RawStructureLab> };
+	runReaction: { lab1: RawId<RawStructureLab>; lab2: RawId<RawStructureLab> };
 	remove: {};
-	repair: { id: Id<StructureObject>; x: number; y: number };
+	repair: { id: RawId<RawStructure>; x: number; y: number };
 	reserveController: { id: string };
 	say: { message: UserString; isPublic: boolean };
 	send: { targetRoomName: string; resourceType: string; amount: number; description: UserString };
@@ -92,14 +94,14 @@ export interface IntentType {
 	setPosition: { x: number; y: number; roomName: string };
 	setPublic: { isPublic: boolean };
 	setSpawnDirections: { directions: number[] };
-	signController: { id: Id<StructureControllerObject>; sign: UserString };
+	signController: { id: RawId<RawStructureController>; sign: UserString };
 	suicide: {};
-	transfer: { id: Id<RoomObject>; amount: number; resourceType: string };
-	unboostCreep: { id: Id<CreepObject> };
+	transfer: { id: RawId<RawRoomObject>; amount: number; resourceType: string };
+	unboostCreep: { id: RawId<RawCreep> };
 	unclaim: {};
 	upgradeController: { id: string };
 	usePower: { power: number; id: string };
-	withdraw: { id: Id<RoomObject>; amount: number; resourceType: string };
+	withdraw: { id: RawId<RawRoomObject>; amount: number; resourceType: string };
 }
 
 export type IntentName = keyof IntentType;
@@ -130,16 +132,16 @@ export type RoomIntent = IntentType[keyof RoomIntents];
 
 export type NotifyIntent = IntentType['notify'];
 
-export type IntentId = 'room' | 'notify' | Id<RoomObject>;
+export type IntentId = 'room' | 'notify' | 'global' | AnyId<RawRoomObject>;
 export type IntentData<Type extends IntentName> = IntentType[Type];
 
 export interface IntentBuilder {
-	list: Record<IntentId, Record<IntentName, IntentType>>;
+	list: Record<string, Partial<Nullable<IntentType>>>;
 	cpu: number;
 	set<Name extends IntentName>(id: IntentId, name: Name, data: IntentData<Name>): void;
 	push<Name extends IntentName>(name: Name, data: IntentData<Name>, maxLen?: number): boolean;
 	pushByName<Name extends IntentName>(id: IntentId, name: Name, data: IntentData<Name>, maxLen?: number): boolean;
-	remove<Name extends IntentName>(id: IntentId, name: Name): boolean;
+	remove<Name extends IntentName>(id: IntentId, name: IntentName): boolean;
 }
 
 export type UserIntents = Nullable<IntentType>;

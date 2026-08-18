@@ -1,21 +1,21 @@
-import { Id } from '../types';
+import type { _HasRawId, RawId } from '../types';
 
-export interface UserMoney {
-	_id: Id<UserMoney>;
+export interface UserMoney extends _HasRawId {
+	_id: RawId<this>;
 }
 
-export interface UserResource {
-	_id: Id<UserResource>;
+export interface UserResource extends _HasRawId {
+	_id: RawId<this>;
 }
 
-export interface MarketOrder {
-	_id: Id<MarketOrder>;
+export interface MarketOrder extends _HasRawId {
+	_id: RawId<this>;
 }
 
-export interface IntershardOrder {
-	_id: Id<IntershardOrder>;
+export interface IntershardOrder extends _HasRawId {
+	_id: RawId<this>;
 }
 
-export interface MarketTransaction {
-	_id: Id<MarketTransaction>;
+export interface MarketTransaction extends _HasRawId {
+	_id: RawId<this>;
 }

@@ -1,10 +1,10 @@
-import { Id } from '../types';
+import type { _HasRawId, RawId } from '../types';
 import { DepositType } from './resources';
 
 export type RoomName = string & Tag.OpaqueTag<Room>;
 
-export interface Room {
-	_id: Id<Room>;
+export interface Room extends _HasRawId {
+	_id: RawId<this>;
 	name: RoomName;
 	status: 'normal' | 'out of borders';
 	bus: boolean;
@@ -24,8 +24,8 @@ export interface RoomPosition {
 	y: number;
 }
 
-export interface RoomTerrain {
-	_id: Id<RoomTerrain>;
+export interface RoomTerrain extends _HasRawId {
+	_id: RawId<this>;
 	room: RoomName;
 	terrain: string;
 }

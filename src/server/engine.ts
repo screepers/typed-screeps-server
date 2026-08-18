@@ -2,8 +2,9 @@ import { BulkCollection } from '../bulk';
 import { ServerDriver } from './driver';
 import { EventEmitter } from '../event-emitter';
 import { IntentName, IntentTransform, UserIntents } from '../objects/intents';
-import { RoomObject } from '../objects/room_objects';
-import { Id } from '../types';
+import { GameOf, RawObject, RawRoomObject } from '../objects/raw_objects';
+import type { RawId } from '../types';
+import type { Scope } from './scope';
 import { Room, RoomName, RoomTerrain } from '../objects/rooms';
 import { User, UserId } from '../objects/users';
 
@@ -40,44 +41,44 @@ export interface EngineEvents {
 		| ((stage: 'getRoomData', roomId: RoomName) => void)
 		| ((stage: 'processRoom', roomId: string) => void)
 		| ((stage: 'finish', roomId: string) => void);
-	preProcessObjectIntents<T extends RoomObject>(
+	preProcessObjectIntents<T extends RawRoomObject>(
 		object: T,
 		userId: UserId,
 		objectIntents: UserIntents,
-		roomObjects: Record<Id<RoomObject>, RoomObject>,
+		roomObjects: Record<RawId<RawRoomObject>, RawRoomObject>,
 		roomTerrain: RoomTerrain,
 		gameTime: number,
 		roomInfo: Room,
-		bulk: BulkCollection<RoomObject>,
+		bulk: BulkCollection<RawRoomObject>,
 		bulkUsers: BulkCollection<User>
 	): void;
-	processObjectIntents<T extends RoomObject>(
+	processObjectIntents<T extends RawRoomObject>(
 		object: T,
 		userId: UserId,
 		objectIntents: UserIntents,
-		roomObjects: Record<Id<RoomObject>, RoomObject>,
+		roomObjects: Record<RawId<RawRoomObject>, RawRoomObject>,
 		roomTerrain: RoomTerrain,
 		gameTime: number,
 		roomInfo: Room,
-		bulk: BulkCollection<RoomObject>,
+		bulk: BulkCollection<RawRoomObject>,
 		bulkUsers: BulkCollection<User>
 	): void;
-	processObject<T extends RoomObject>(
+	processObject<T extends RawRoomObject>(
 		object: T,
-		roomObjects: Record<Id<RoomObject>, RoomObject>,
+		roomObjects: Record<RawId<RawRoomObject>, RawRoomObject>,
 		roomTerrain: RoomTerrain,
 		gameTime: number,
 		roomInfo: Room,
-		bulk: BulkCollection<RoomObject>,
+		bulk: BulkCollection<RawRoomObject>,
 		bulkUsers: BulkCollection<User>
 	): void;
-	postProcessObject<T extends RoomObject>(
+	postProcessObject<T extends RawRoomObject>(
 		object: T,
-		roomObjects: Record<Id<RoomObject>, RoomObject>,
+		roomObjects: Record<RawId<RawRoomObject>, RawRoomObject>,
 		roomTerrain: RoomTerrain,
 		gameTime: number,
 		roomInfo: Room,
-		bulk: BulkCollection<RoomObject>,
+		bulk: BulkCollection<RawRoomObject>,
 		bulkUsers: BulkCollection<User>,
 		eventLog: EventLog,
 		mapView: MapView
@@ -85,36 +86,41 @@ export interface EngineEvents {
 	processRoom(
 		roomId: string,
 		roomInfo: Room,
-		roomObjects: Record<Id<RoomObject>, RoomObject>,
+		roomObjects: Record<RawId<RawRoomObject>, RawRoomObject>,
 		roomTerrain: RoomTerrain,
 		gameTime: number,
-		bulk: BulkCollection<RoomObject>,
+		bulk: BulkCollection<RawRoomObject>,
 		bulkUsers: BulkCollection<User>,
 		eventLog: EventLog
 	): void;
 }
 
+export type RawPropertyGetters<TRaw extends RawObject> = Record<string, (raw: TRaw, id: string) => unknown>;
+
+export interface RegisterCustomObjectPrototypeOptions<
+	TRaw extends RawRoomObject = RawRoomObject,
+	TGame extends GameOf<TRaw> = GameOf<TRaw>,
+> {
+	parent?: string;
+	properties?: RawPropertyGetters<TRaw>;
+	prototypeExtender?: (
+		prototype: TGame,
+		scope: Scope,
+		deps: { utils: typeof import('@screeps/engine/src/utils.js') }
+	) => void;
+	findConstant?: number;
+	lookConstant?: string;
+}
+
 export interface ServerEngine extends EventEmitter<EngineEvents> {
 	driver: ServerDriver;
 	customIntentTypes: Record<IntentName, { [keyName: string]: IntentTransform }>;
-	registerCustomObjectPrototype: <TPrototype extends Record<string, any> = Record<string, any>>(
-		objectType: string,
+	registerCustomObjectPrototype: <
+		TRaw extends RawRoomObject,
+		TGame extends GameOf<TRaw> = GameOf<TRaw>,
+	>(
+		objectType: TRaw['type'],
 		name: string,
-		opts: {
-			parent?: string;
-			properties?: Record<string, any>;
-			prototypeExtender?: (
-				prototype: TPrototype,
-				scope: {
-					runtimeData: any;
-					intents: any;
-					register: any;
-					globals: any;
-				},
-				deps: { utils: typeof import('@screeps/engine/src/utils.js') }
-			) => void;
-			findConstant?: number;
-			lookConstant?: string;
-		}
+		opts: RegisterCustomObjectPrototypeOptions<TRaw, TGame>
 	) => void;
 }

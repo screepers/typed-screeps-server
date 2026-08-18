@@ -1,5 +1,5 @@
 type User = import('./objects/users').User;
-type UserId = import('./types').Id<User>;
+type UserId = import('./objects/users').UserId;
 type _RoomPosition = import('./objects/rooms').RoomPosition;
 type RoomName = import('./objects/rooms').RoomName;
 type _Room = import('./objects/rooms').Room;
@@ -96,10 +96,10 @@ declare module '@screeps/engine/src/utils.js' {
 	};
 	export function sendAttackingNotification(target: any, roomController: any): void;
 	export function checkStructureAgainstController(object: any, roomObjects: any, roomController: any): boolean;
-	export function defineGameObjectProperties<TPrototype extends Record<string, any>>(
-		obj: TPrototype,
-		dataFn: (id: string) => any,
-		properties: Record<string, (obj: TPrototype) => any>,
+	export function defineGameObjectProperties<TRaw>(
+		obj: object,
+		dataFn: (id: string) => TRaw,
+		properties: Record<string, (raw: TRaw, id: string) => unknown>,
 		opts?: { enumerable?: boolean; canSet?: boolean }
 	): void;
 	export function isAtEdge(object: any): boolean;
@@ -155,11 +155,11 @@ declare module '@screeps/driver' {
 	export function activateRoom(room: RoomName): any;
 	export function saveUserIntents(userId: any, intents: any): any;
 	export function getRoomIntents(roomId: RoomName): import('./objects/intents').RoomIntent;
-	export function getRoomObjects(roomId: RoomName): import('./objects/room_objects').RoomObject[];
-	export function getRoomFlags(roomId: RoomName): import('./objects/room_objects').FlagObject[];
+	export function getRoomObjects(roomId: RoomName): import('./objects/raw_objects').RawRoomObject[];
+	export function getRoomFlags(roomId: RoomName): import('./objects/raw_objects').RawFlag[];
 	export function getRoomTerrain(roomId: RoomName): import('./objects/rooms').RoomTerrain;
-	export function bulkObjectsWrite(): import('./bulk').BulkCollection<import('./objects/room_objects').RoomObject>;
-	export function bulkFlagsWrite(): import('./bulk').BulkCollection<import('./objects/room_objects').FlagObject>;
+	export function bulkObjectsWrite(): import('./bulk').BulkCollection<import('./objects/raw_objects').RawRoomObject>;
+	export function bulkFlagsWrite(): import('./bulk').BulkCollection<import('./objects/raw_objects').RawFlag>;
 	export function bulkUsersWrite(): import('./bulk').BulkCollection<import('./objects/users').User>;
 	export function bulkRoomsWrite(): import('./bulk').BulkCollection<_Room>;
 	export function bulkTransactionsWrite(): import('./bulk').BulkCollection<
@@ -172,7 +172,7 @@ declare module '@screeps/driver' {
 	export function bulkUsersMoney(): import('./bulk').BulkCollection<import('./objects/objects').UserMoney>;
 	export function bulkUsersResources(): import('./bulk').BulkCollection<import('./objects/objects').UserResource>;
 	export function bulkUsersPowerCreeps(): import('./bulk').BulkCollection<
-		import('./objects/room_objects').PowerCreepObject
+		import('./objects/raw_objects').RawPowerCreep
 	>;
 	export function clearRoomIntents(roomId: RoomName): any;
 	export function clearGlobalIntents(): any;
@@ -188,13 +188,13 @@ declare module '@screeps/driver' {
 	export function getInterRoom(): Promise<
 		[
 			gameTime: number,
-			creeps: import('./objects/room_objects').CreepObject[],
+			creeps: import('./objects/raw_objects').RawCreep[],
 			accessibleRooms: _Room[],
-			roomObjects: import('./objects/room_objects').RoomObject[],
+			roomObjects: import('./objects/raw_objects').RawRoomObject[],
 			userData: {
 				orders: import('./objects/objects').MarketOrder[];
 				users: User[];
-				userPowerCreeps: import('./objects/room_objects').PowerCreepObject[];
+				userPowerCreeps: import('./objects/raw_objects').RawPowerCreep[];
 				userIntents: import('./objects/intents').UserIntents;
 				shardName: string;
 			},
