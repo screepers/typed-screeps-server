@@ -20,7 +20,11 @@ export interface BackendEvents {
 export interface ServerBackend extends EventEmitter<BackendEvents> {
 	welcomeText: string;
 	router: import('express').Router;
-	onGetRoomHistory(roomName: RoomName, baseTime: number, callback: () => never): never;
+	onGetRoomHistory(
+		roomName: RoomName,
+		baseTime: string,
+		callback: (error?: string | Error | null, result?: string) => void
+	): void;
 	customObjectTypes: Record<string, { sidepanel: string }>;
 	customIntentTypes: Record<IntentName, { [keyName: string]: IntentTransform }>;
 	historyChunkSize: number;
