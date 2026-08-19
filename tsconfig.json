@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
 		"module": "esnext",
-		"moduleResolution": "node",
+		"moduleResolution": "bundler",
 		"target": "es2017",
 		"sourceMap": false,
 		"declaration": true,
@@ -9,8 +9,10 @@
 		"strict": true,
 		"newLine": "LF",
 		"removeComments": false,
+		"rootDir": "./src",
 		"outDir": "dist/",
-		"declarationDir": "dist/"
+		"declarationDir": "dist/",
+		"types": ["node", "screeps", "pixi.js"]
 	},
 	"include": ["./src/**/*.ts"],
 	"exclude": ["node_modules", "dist"]

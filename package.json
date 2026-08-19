@@ -34,8 +34,8 @@
 		"isolated-vm": "^6.0.2",
 		"lint-staged": "^12.3.8",
 		"prettier": "^3.8.1",
-		"typescript": "^5.5.0",
-		"typescript-eslint": "^8.38.0"
+		"typescript": "^6.0.3",
+		"typescript-eslint": "^8.67.0"
 	},
 	"dependencies": {
 		"lodash": "^3.10.1",
