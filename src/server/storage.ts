@@ -24,6 +24,28 @@ export type DbQuery<T> = {
 	[field: string]: unknown;
 };
 
+type UnwrapDbTypeOp<Type> =
+	Type extends { $in: readonly (infer U)[] } ? U
+	: Type extends { $eq: infer U } ? U
+	: Type extends object ? never
+	: Type;
+
+/** Discriminant `type` value from a query, including `$and` / `$or` / `$in`. */
+export type TypeFromDbQuery<Q> =
+	Q extends { type: infer Type } ? UnwrapDbTypeOp<Type>
+	: Q extends { $and: readonly (infer E)[] } ? TypeFromDbQuery<E>
+	: Q extends { $or: readonly (infer E)[] } ? TypeFromDbQuery<E>
+	: never;
+
+/**
+ * Narrow a collection document by query `type`, like `Room.find` + a structureType filter.
+ * Falls back to `T` when the query has no usable `type` (or `T` is not a typed union).
+ */
+export type NarrowFromDbQuery<T, Q> =
+	[TypeFromDbQuery<Q>] extends [never] ? T
+	: [Extract<T, { type: TypeFromDbQuery<Q> }>] extends [never] ? T
+	: Extract<T, { type: TypeFromDbQuery<Q> }>;
+
 export interface DbUpdate<T> {
 	$set?: Partial<T> & Record<string, unknown>;
 	$merge?: Partial<T> & Record<string, unknown>;
@@ -49,7 +71,9 @@ export interface DbFindExOptions {
  * Augment to add methods from storage replacements (e.g. screepsmod-mongo).
  */
 export interface DbCollection<T> {
+	find<const Q extends DbQuery<T>>(query: Q): Promise<NarrowFromDbQuery<T, Q>[]>;
 	find(query?: DbQuery<T>): Promise<T[]>;
+	findOne<const Q extends DbQuery<T>>(query: Q): Promise<NarrowFromDbQuery<T, Q> | null>;
 	findOne(query?: DbQuery<T>): Promise<T | null>;
 	by(field: string, value: unknown): Promise<T | undefined>;
 	clear(): Promise<void>;
@@ -64,7 +88,7 @@ export interface DbCollection<T> {
 		params?: { upsert?: boolean }
 	): Promise<{ modified?: number; inserted?: number }>;
 	bulk(ops: DbBulkOp<T>[]): Promise<void>;
-	findEx(query: DbQuery<T>, opts: DbFindExOptions): Promise<T[]>;
+	findEx<const Q extends DbQuery<T>>(query: Q, opts: DbFindExOptions): Promise<NarrowFromDbQuery<T, Q>[]>;
 }
 
 /**

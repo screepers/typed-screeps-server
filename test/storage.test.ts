@@ -2,7 +2,19 @@ import { Exact } from '../src/types';
 import { CliSandbox, ServerCli } from '../src/server/cli';
 import { ServerCommon } from '../src/server/common';
 import { ServerConfig } from '../src/server/server';
-import { DbCollection, RawRoomObject, Room, RoomName, ServerStorage, User } from '../src';
+import {
+	DbCollection,
+	RawCreep,
+	RawRoomObject,
+	RawSource,
+	RawStructureController,
+	RawStructureExtension,
+	RawStructureSpawn,
+	Room,
+	RoomName,
+	ServerStorage,
+	User,
+} from '../src';
 
 declare const config: ServerConfig;
 declare const sandbox: CliSandbox;
@@ -30,6 +42,23 @@ async function _dbUsage() {
 	user;
 	const objects: RawRoomObject[] = await sandbox.storage.db['rooms.objects'].find({ room: roomName });
 	objects;
+	const creeps: RawCreep[] = await config.common.storage.db['rooms.objects'].find({ type: 'creep' });
+	creeps;
+	const controller: RawStructureController | null = await config.common.storage.db['rooms.objects'].findOne({
+		type: 'controller',
+	});
+	controller;
+	const andController: RawStructureController[] = await config.common.storage.db['rooms.objects'].find({
+		$and: [{ room: roomName }, { type: 'controller' }],
+	});
+	andController;
+	const energyStructures: (RawStructureSpawn | RawStructureExtension)[] = await config.common.storage.db[
+		'rooms.objects'
+	].find({ type: { $in: ['spawn', 'extension'] } });
+	energyStructures;
+	// @ts-expect-error `type: 'creep'` does not return sources
+	const _notSources: RawSource[] = await config.common.storage.db['rooms.objects'].find({ type: 'creep' });
+	_notSources;
 	await config.common.storage.db.users.update({ username: 'User1' }, { $set: { cpu: 100 } });
 	const inserted: User = await config.common.storage.db.users.insert({ username: 'Bot', gcl: 0 });
 	inserted;
