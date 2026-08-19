@@ -1,6 +1,7 @@
 import { EventEmitter } from '../event-emitter';
 import { MineralType } from '../objects/resources';
 import { RoomName } from '../objects/rooms';
+import { ServerStorage } from './storage';
 
 export interface CommonCli {
 	_help: string;
@@ -48,15 +49,56 @@ export interface MapCli extends CommonCli {
 	updateTerrainData(): Promise<void>;
 }
 
+export interface BotSpawnOptions {
+	username?: string;
+	cpu?: number;
+	gcl?: number;
+	x?: number;
+	y?: number;
+}
+
+export interface BotsCli extends CommonCli {
+	spawn(botAiName: string, roomName: RoomName, opts?: BotSpawnOptions): Promise<string>;
+	reload(botAiName: string): Promise<string>;
+	removeUser(username: string): Promise<string>;
+}
+
+export interface StrongholdSpawnOptions {
+	templateName?: string;
+	x?: number;
+	y?: number;
+	user?: string;
+	deployTime?: number;
+}
+
+export interface StrongholdsCli extends CommonCli {
+	spawn(roomName: RoomName, opts?: StrongholdSpawnOptions): Promise<unknown>;
+	expand(roomName: RoomName): Promise<string>;
+}
+
 export interface CliEvents {
 	cliSandbox: (sandbox: CliSandbox) => void;
 }
 
-export interface CliSandbox extends EventEmitter<CliEvents> {
+/**
+ * `config.cli` — EventEmitter that creates the sandbox. Distinct from {@link CliSandbox}.
+ */
+export interface ServerCli extends EventEmitter<CliEvents> {
+	greeting: string;
+	createSandbox(outputCallback: (data: string, isResult?: boolean) => void): CliSandbox;
+	connectionListener(socket: import('net').Socket): void;
+}
+
+/**
+ * VM context for CLI commands (`print`, `storage`, `map`, `bots`, `strongholds`, `system`).
+ * `storage` is `common.storage`, same object as `config.common.storage`.
+ */
+export interface CliSandbox {
 	print: (...args: any[]) => void;
+	help: (object?: unknown) => string;
 	system: SystemCli;
-	storage: {};
+	storage: ServerStorage;
 	map: MapCli;
-	bots: {};
-	strongholds: {};
+	bots: BotsCli;
+	strongholds: StrongholdsCli;
 }

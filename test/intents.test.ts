@@ -1,5 +1,5 @@
 import { IntentBuilder, IntentData, IntentId, IntentType, NotifyIntent } from '../src/objects/intents';
-import { MarketOrder } from '../src/objects/objects';
+import { RawMarketOrder } from '../src/objects/objects';
 import {
 	AnyId,
 	RawConstructionSite,
@@ -21,7 +21,7 @@ declare const sourceId: RawId<RawSource>;
 declare const siteId: RawId<RawConstructionSite>;
 declare const labId: RawId<RawStructureLab>;
 declare const powerSpawnId: RawId<RawStructurePowerSpawn>;
-declare const orderId: RawId<MarketOrder>;
+declare const orderId: RawId<RawMarketOrder>;
 declare const roomName: RoomName;
 declare const unknownKey: string;
 

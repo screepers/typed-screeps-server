@@ -1,4 +1,4 @@
-import { MarketOrder } from './objects';
+import { RawMarketOrder } from './objects';
 import {
 	AnyId,
 	RawConstructionSite,
@@ -61,8 +61,8 @@ export interface IntentType {
 	destroyStructure: { roomName: RoomName; id: RawId<RawStructure> };
 	removeConstructionSite: { roomName: RoomName; id: RawId<RawConstructionSite> };
 	removeFlag: { roomName: RoomName; name: UserString };
-	cancelOrder: { orderId: RawId<MarketOrder> };
-	changeOrderPrice: { orderId: RawId<MarketOrder>; newPrice: Price };
+	cancelOrder: { orderId: RawId<RawMarketOrder> };
+	changeOrderPrice: { orderId: RawId<RawMarketOrder>; newPrice: Price };
 	createOrder: {
 		type: ORDER_BUY | ORDER_SELL;
 		resourceType: MarketResourceConstant;
@@ -71,9 +71,9 @@ export interface IntentType {
 		roomName: RoomName;
 	};
 	createPowerCreep: { name: UserString; className: PowerClassConstant };
-	deal: { orderId: RawId<MarketOrder>; amount: number; targetRoomName: RoomName };
+	deal: { orderId: RawId<RawMarketOrder>; amount: number; targetRoomName: RoomName };
 	deletePowerCreep: { id: RawId<RawPowerCreep>; cancel: boolean };
-	extendOrder: { orderId: RawId<MarketOrder>; addAmount: number };
+	extendOrder: { orderId: RawId<RawMarketOrder>; addAmount: number };
 	renamePowerCreep: { id: RawId<RawPowerCreep>; name: UserString };
 	spawnPowerCreep: { id: RawId<RawStructurePowerSpawn>; name: UserString };
 	suicidePowerCreep: { id: RawId<RawPowerCreep> };

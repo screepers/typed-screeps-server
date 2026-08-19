@@ -11,6 +11,7 @@ export * from './objects/users';
 export * from './server/backend';
 export * from './server/cli';
 export * from './server/common';
+export * from './server/storage';
 export * from './server/driver';
 export * from './server/scope';
 export * from './server/engine';

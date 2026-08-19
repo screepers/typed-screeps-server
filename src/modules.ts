@@ -32,8 +32,8 @@ declare module '@screeps/backend/lib/utils.js' {
 }
 
 declare module '@screeps/common' {
+	export const storage: import('./server/storage').ServerStorage;
 	// export const configManager: typeof import('lib/config-manager');
-	// export const storage: typeof import('lib/storage');
 	// export const rpc: typeof import('lib/rpc');
 	export function findPort(port: any): any;
 	export function encodeTerrain(terrain: any): string;
@@ -163,14 +163,14 @@ declare module '@screeps/driver' {
 	export function bulkUsersWrite(): import('./bulk').BulkCollection<import('./objects/users').User>;
 	export function bulkRoomsWrite(): import('./bulk').BulkCollection<_Room>;
 	export function bulkTransactionsWrite(): import('./bulk').BulkCollection<
-		import('./objects/objects').MarketTransaction
+		import('./objects/objects').RawMarketTransaction
 	>;
-	export function bulkMarketOrders(): import('./bulk').BulkCollection<import('./objects/objects').MarketOrder>;
+	export function bulkMarketOrders(): import('./bulk').BulkCollection<import('./objects/objects').RawMarketOrder>;
 	export function bulkMarketIntershardOrders(): import('./bulk').BulkCollection<
-		import('./objects/objects').IntershardOrder
+		import('./objects/objects').RawIntershardOrder
 	>;
-	export function bulkUsersMoney(): import('./bulk').BulkCollection<import('./objects/objects').UserMoney>;
-	export function bulkUsersResources(): import('./bulk').BulkCollection<import('./objects/objects').UserResource>;
+	export function bulkUsersMoney(): import('./bulk').BulkCollection<import('./objects/objects').RawUserMoney>;
+	export function bulkUsersResources(): import('./bulk').BulkCollection<import('./objects/objects').RawUserResource>;
 	export function bulkUsersPowerCreeps(): import('./bulk').BulkCollection<
 		import('./objects/raw_objects').RawPowerCreep
 	>;
@@ -192,7 +192,7 @@ declare module '@screeps/driver' {
 			accessibleRooms: _Room[],
 			roomObjects: import('./objects/raw_objects').RawRoomObject[],
 			userData: {
-				orders: import('./objects/objects').MarketOrder[];
+				orders: import('./objects/objects').RawMarketOrder[];
 				users: User[];
 				userPowerCreeps: import('./objects/raw_objects').RawPowerCreep[];
 				userIntents: import('./objects/intents').UserIntents;

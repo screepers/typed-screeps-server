@@ -1,5 +1,5 @@
 import { ServerBackend } from './backend';
-import { CliSandbox } from './cli';
+import { ServerCli } from './cli';
 import { ServerCommon } from './common';
 import { ServerEngine } from './engine';
 
@@ -9,6 +9,6 @@ export interface ServerConfig {
 	backend: ServerBackend;
 	common: ServerCommon;
 	engine: ServerEngine;
-	cli: CliSandbox;
+	cli: ServerCli;
 	cronjobs: Record<string, Cronjob>;
 }

@@ -1,15 +1,11 @@
 import { ObjectMetadata } from '@screeps/renderer';
 import { EventEmitter } from '../event-emitter';
+import { RawUserNotification } from '../objects/objects';
 import { User } from '../objects/users';
 import { RoomName } from '../objects/rooms';
 import { IntentName, IntentTransform } from '../objects/intents';
 
-export interface UserNotification {
-	message: string;
-	date: number; // From Date.getTime()
-	count: number;
-	type: 'msg' | 'error';
-}
+export interface UserNotification extends Pick<RawUserNotification, 'message' | 'date' | 'count' | 'type'> {}
 
 export interface BackendEvents {
 	sendUserNotifications: (user: User, messages: UserNotification[]) => void;
