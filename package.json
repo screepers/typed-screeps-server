@@ -24,7 +24,7 @@
 	"devDependencies": {
 		"@types/express": "^4.11.1",
 		"@types/lodash": "^3.10.9",
-		"@types/node": "^10.17.60",
+		"@types/node": "^24.13.3",
 		"@types/pixi.js": "^4.8.9",
 		"@types/q": "^1.5.8",
 		"@types/screeps": "^3.3.8",
