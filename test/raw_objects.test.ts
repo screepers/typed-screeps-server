@@ -4,9 +4,14 @@ import {
 	RawCreep,
 	RawMineral,
 	RawOf,
+	RawPortal,
+	RawResource,
 	RawRoomObject,
 	RawStructure,
 	RawStructureContainer,
+	RawStructureFactory,
+	RawStructureLink,
+	RawStructureSpawn,
 } from '../src/objects/raw_objects';
 import { RoomName } from '../src/objects/rooms';
 import { IntentId } from '../src/objects/intents';
@@ -46,3 +51,38 @@ const _draft: Draft<RawMineral> = {
 };
 _draft;
 type _assertDraftOmitsId = '_id' extends keyof Draft<RawMineral> ? never : true;
+
+type _assertFactoryGame = GameOf<RawStructureFactory> extends StructureFactory ? true : never;
+type _assertLinkGame = GameOf<RawStructureLink> extends StructureLink ? true : never;
+type _assertPortalGame = GameOf<RawPortal> extends StructurePortal ? true : never;
+type _assertRawOfFactory = RawOf<StructureFactory> extends RawStructureFactory ? true : never;
+type _assertRawOfLink = RawOf<StructureLink> extends RawStructureLink ? true : never;
+type _assertRawOfPortal = RawOf<StructurePortal> extends RawPortal ? true : never;
+type _assertFactoryIsStructure = RawStructureFactory extends RawStructure ? true : never;
+type _assertLinkIsStructure = RawStructureLink extends RawStructure ? true : never;
+type _assertPortalIsStructure = RawPortal extends RawStructure ? true : never;
+
+const _spawnDraft: Draft<RawStructureSpawn> = {
+	type: 'spawn',
+	x: 25,
+	y: 25,
+	room: 'W1N1' as RoomName,
+	notifyWhenAttacked: true,
+	name: 'Spawn1',
+	user: '' as RawStructureSpawn['user'],
+	store: { energy: 0 },
+	storeCapacityResource: { energy: 300 },
+	hits: 5000,
+	hitsMax: 5000,
+};
+_spawnDraft;
+
+const _droppedEnergy: Draft<RawResource> = {
+	type: 'energy',
+	x: 10,
+	y: 10,
+	room: 'W1N1' as RoomName,
+	resourceType: RESOURCE_ENERGY,
+	energy: 50,
+};
+_droppedEnergy;

@@ -19,6 +19,7 @@ import {
 	RawStructureSpawn,
 	RawTombstone,
 } from './raw_objects';
+import { MarketResourceType, ResourceType } from './resources';
 import { RoomName } from './rooms';
 import { Nullable, RawId } from '../types';
 
@@ -65,7 +66,7 @@ export interface IntentType {
 	changeOrderPrice: { orderId: RawId<RawMarketOrder>; newPrice: Price };
 	createOrder: {
 		type: ORDER_BUY | ORDER_SELL;
-		resourceType: MarketResourceConstant;
+		resourceType: MarketResourceType;
 		price: Price;
 		totalAmount: number;
 		roomName: RoomName;
@@ -93,7 +94,7 @@ export interface IntentType {
 	};
 	destroy: {};
 	dismantle: { id: RawId<RawStructure> };
-	drop: { amount: number; resourceType: ResourceConstant };
+	drop: { amount: number; resourceType: ResourceType };
 	enableRoom: { id: RawId<RawStructureController> };
 	generateSafeMode: { id: RawId<RawStructureController> };
 	harvest: { id: RawId<RawSource> | RawId<RawMineral> | RawId<RawDeposit> };
@@ -104,7 +105,7 @@ export interface IntentType {
 	observeRoom: { roomName: RoomName };
 	pickup: { id: RawId<RawResource> };
 	processPower: {};
-	produce: { resourceType: ResourceConstant; amount: number };
+	produce: { resourceType: ResourceType; amount: number };
 	pull: { id: RawId<RawCreep> };
 	rangedAttack: { id: RawId<RawStructure> | RawId<RawCreep> | RawId<RawPowerCreep> };
 	rangedHeal: { id: RawId<RawCreep> | RawId<RawPowerCreep> };
@@ -118,7 +119,7 @@ export interface IntentType {
 	repair: { id: RawId<RawStructure>; x: number; y: number };
 	reserveController: { id: RawId<RawStructureController> };
 	say: { message: UserString; isPublic: boolean };
-	send: { targetRoomName: RoomName; resourceType: ResourceConstant; amount: number; description: UserString };
+	send: { targetRoomName: RoomName; resourceType: ResourceType; amount: number; description: UserString };
 	setColor: { color: ColorConstant; secondaryColor: ColorConstant };
 	setPosition: { x: number; y: number; roomName: RoomName };
 	setPublic: { isPublic: boolean };
@@ -128,7 +129,7 @@ export interface IntentType {
 	transfer: {
 		id: RawId<RawStructure> | RawId<RawCreep> | RawId<RawPowerCreep>;
 		amount: number;
-		resourceType: ResourceConstant;
+		resourceType: ResourceType;
 	};
 	unboostCreep: { id: RawId<RawCreep> };
 	unclaim: {};
@@ -137,7 +138,7 @@ export interface IntentType {
 	withdraw: {
 		id: RawId<RawStructure> | RawId<RawTombstone> | RawId<RawRuin>;
 		amount: number;
-		resourceType: ResourceConstant;
+		resourceType: ResourceType;
 	};
 }
 

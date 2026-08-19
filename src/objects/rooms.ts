@@ -1,7 +1,12 @@
 import type { _HasRawId, RawId } from '../types';
-import { DepositType } from './resources';
+import type { DepositType } from './resources';
 
 export type RoomName = string & Tag.OpaqueTag<Room>;
+
+export interface Coord {
+	x: number;
+	y: number;
+}
 
 export interface Room extends _HasRawId {
 	_id: RawId<this>;
@@ -18,10 +23,8 @@ export interface Room extends _HasRawId {
 	active: boolean;
 }
 
-export interface RoomPosition {
+export interface RoomPosition extends Coord {
 	room: RoomName;
-	x: number;
-	y: number;
 }
 
 export interface RoomTerrain extends _HasRawId {

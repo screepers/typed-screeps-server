@@ -156,10 +156,10 @@ declare module '@screeps/driver' {
 	export function saveUserIntents(userId: any, intents: any): any;
 	export function getRoomIntents(roomId: RoomName): import('./objects/intents').RoomIntent;
 	export function getRoomObjects(roomId: RoomName): import('./objects/raw_objects').RawRoomObject[];
-	export function getRoomFlags(roomId: RoomName): import('./objects/raw_objects').RawFlag[];
+	export function getRoomFlags(roomId: RoomName): import('./objects/objects').RawRoomFlags[];
 	export function getRoomTerrain(roomId: RoomName): import('./objects/rooms').RoomTerrain;
 	export function bulkObjectsWrite(): import('./bulk').BulkCollection<import('./objects/raw_objects').RawRoomObject>;
-	export function bulkFlagsWrite(): import('./bulk').BulkCollection<import('./objects/raw_objects').RawFlag>;
+	export function bulkFlagsWrite(): import('./bulk').BulkCollection<import('./objects/objects').RawRoomFlags>;
 	export function bulkUsersWrite(): import('./bulk').BulkCollection<import('./objects/users').User>;
 	export function bulkRoomsWrite(): import('./bulk').BulkCollection<_Room>;
 	export function bulkTransactionsWrite(): import('./bulk').BulkCollection<

@@ -1,5 +1,6 @@
-import { IntentTransform } from '../objects/intents';
-import { ServerStorage } from './storage';
+import type { IntentTransform } from '../objects/intents';
+import type { ResourceType } from '../objects/resources';
+import type { ServerStorage } from './storage';
 
 export interface StrongholdTemplateStructure {
 	type: string;
@@ -37,10 +38,18 @@ export interface CommonSystem {
 }
 
 /**
+ * `config.common.constants`. Augment for `RESOURCE_*` keys a mod adds.
+ */
+export interface ServerConstants {
+	RESOURCES_ALL: ResourceType[];
+	[name: string]: any;
+}
+
+/**
  * `config.common`. `storage` is the same object as `@screeps/common`.storage and CLI `sandbox.storage`.
  */
 export interface ServerCommon {
-	constants: Record<string, any>;
+	constants: ServerConstants;
 	storage: ServerStorage;
 	bots: { [name: string]: string };
 	strongholds: CommonStrongholds;
