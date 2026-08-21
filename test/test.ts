@@ -2,16 +2,18 @@ import { ServerConfig } from '../src/server/server';
 import { EventEmitter } from '../src/event-emitter';
 import { BackendEvents } from '../src/server/backend';
 
-const server: ServerConfig = null;
+const server: ServerConfig = null as never;
 
-server.backend.on('sendUserNotifications', (user, messages) => {
-	user;
-	//^? (parameter) user: User
-	messages;
-	//^? (parameter) messages: UserNotification[]
-});
+if (server.backend) {
+	server.backend.on('sendUserNotifications', (user, messages) => {
+		user;
+		//^? (parameter) user: User
+		messages;
+		//^? (parameter) messages: UserNotification[]
+	});
 
-server.backend.on('expressPreConfig', (app) => {
-	app;
-	//^? (parameter) app: e.Application
-});
+	server.backend.on('expressPreConfig', (app) => {
+		app;
+		//^? (parameter) app: e.Application
+	});
+}

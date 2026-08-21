@@ -32,31 +32,33 @@ _reactorIsStructure;
 const _reactorIntentId: AnyId<RawStructure> = '' as AnyId<RawReactor>;
 _reactorIntentId;
 
-config.engine.on(
-	'preProcessObjectIntents',
-	function (object, userId, objectIntents, roomObjects, roomTerrain, gameTime, roomInfo, bulk, bulkUsers) {
-		object;
-		userId;
-		roomTerrain;
-		gameTime;
-		roomInfo;
-		bulk;
-		bulkUsers;
+if (config.engine) {
+	config.engine.on(
+		'preProcessObjectIntents',
+		function (object, userId, objectIntents, roomObjects, roomTerrain, gameTime, roomInfo, bulk, bulkUsers) {
+			object;
+			userId;
+			roomTerrain;
+			gameTime;
+			roomInfo;
+			bulk;
+			bulkUsers;
 
-		if (
-			objectIntents.withdraw &&
-			objectIntents.withdraw.id &&
-			objectIntents.withdraw.resourceType == config.common.constants.RESOURCE_THORIUM
-		) {
-			const target = roomObjects[objectIntents.withdraw.id];
-			if (target.type == 'reactor') {
-				target;
-				// ^?
-				objectIntents.withdraw = null;
+			if (
+				objectIntents.withdraw &&
+				objectIntents.withdraw.id &&
+				objectIntents.withdraw.resourceType == config.common.constants.RESOURCE_THORIUM
+			) {
+				const target = roomObjects[objectIntents.withdraw.id];
+				if (target.type == 'reactor') {
+					target;
+					// ^?
+					objectIntents.withdraw = null;
+				}
 			}
 		}
-	}
-);
+	);
+}
 
 type _assertRawOfReactor = [RawOf<Reactor>] extends [never] ? never
 :	RawOf<Reactor> extends RawReactor ? true

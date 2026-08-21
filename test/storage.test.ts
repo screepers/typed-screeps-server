@@ -105,16 +105,27 @@ config.common.dbCollections;
 config.common.system.sanitizeUserIntents({});
 config.common.strongholds.templates.bunker1;
 
-config.cli.on('cliSandbox', (cliSandbox) => {
-	cliSandbox.print('hi');
-	cliSandbox.bots.spawn('simplebot', roomName);
-	cliSandbox.map.generateRoom(roomName);
-	cliSandbox.system.pauseSimulation();
-	cliSandbox.strongholds.expand(roomName);
-	cliSandbox.help(cliSandbox.storage);
-});
+if (config.cli) {
+	config.cli.on('cliSandbox', (cliSandbox) => {
+		cliSandbox.print('hi');
+		cliSandbox.bots.spawn('simplebot', roomName);
+		cliSandbox.map.generateRoom(roomName);
+		cliSandbox.system.pauseSimulation();
+		cliSandbox.strongholds.expand(roomName);
+		cliSandbox.help(cliSandbox.storage);
+	});
 
-// @ts-expect-error config.cli is the EventEmitter, not the sandbox
-config.cli.print;
+	// @ts-expect-error config.cli is the EventEmitter, not the sandbox
+	config.cli.print;
+}
+
+if (config.storage) {
+	config.storage.dbOptions;
+	config.storage.getDb();
+	config.storage.loadDb();
+	config.storage.socketListener;
+	// @ts-expect-error config.storage is the process EventEmitter, not the client
+	config.storage.db;
+}
 // @ts-expect-error unknown collection
 config.common.storage.db.notACollection;

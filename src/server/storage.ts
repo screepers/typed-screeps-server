@@ -1,3 +1,4 @@
+import { EventEmitter } from '../event-emitter';
 import {
 	RawLeaderboard,
 	RawMarketOrder,
@@ -228,4 +229,22 @@ export interface ServerStorage {
 	pubsub: StoragePubsub;
 	queue: StorageQueue;
 	resetAllData(): Promise<void>;
+}
+
+/** `config.storage` events. Vanilla emits none; augment for storage-process mods. */
+export interface LokiStorageEvents {}
+
+/**
+ * `config.storage` — EventEmitter in the storage process (LokiJS + RPC socket).
+ * Distinct from {@link ServerStorage} (`config.common.storage`, the client).
+ */
+export interface LokiStorage extends EventEmitter<LokiStorageEvents> {
+	socketListener(socket: import('net').Socket): void;
+	dbOptions: {
+		autosave: boolean;
+		autosaveInterval: number;
+		[key: string]: any;
+	};
+	getDb(): any;
+	loadDb(): Promise<void>;
 }
