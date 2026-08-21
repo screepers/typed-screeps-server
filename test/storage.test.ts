@@ -59,6 +59,38 @@ async function _dbUsage() {
 	// @ts-expect-error `type: 'creep'` does not return sources
 	const _notSources: RawSource[] = await config.common.storage.db['rooms.objects'].find({ type: 'creep' });
 	_notSources;
+	const projectedUsers = await config.common.storage.db.users.find({}, { username: 1, badge: 1, score: 1, rank: 1 });
+	type _assertProjectedUsers =
+		Exact<(typeof projectedUsers)[number], Pick<User, '_id' | 'username' | 'badge'>> extends true ? true : never;
+	const _assertProjectedUsers: _assertProjectedUsers = true;
+	_assertProjectedUsers;
+	const projectedUser = await config.common.storage.db.users.findOne(
+		{ username: 'User1' },
+		{ username: true, badge: true, gcl: true, power: true }
+	);
+	type _assertProjectedUser =
+		Exact<typeof projectedUser, Pick<User, '_id' | 'username' | 'badge' | 'gcl' | 'power'> | null> extends true ? true
+		:	never;
+	const _assertProjectedUser: _assertProjectedUser = true;
+	_assertProjectedUser;
+	const projectedCreeps = await config.common.storage.db['rooms.objects'].find({ type: 'creep' }, { type: 1, name: 1 });
+	type _assertProjectedCreeps =
+		Exact<(typeof projectedCreeps)[number], Pick<RawCreep, '_id' | 'type' | 'name'>> extends true ? true : never;
+	const _assertProjectedCreeps: _assertProjectedCreeps = true;
+	_assertProjectedCreeps;
+	const roomsById = await config.common.storage.db.rooms.find({}, { _id: true });
+	type _assertRoomsById = Exact<(typeof roomsById)[number], Pick<Room, '_id'>> extends true ? true : never;
+	const _assertRoomsById: _assertRoomsById = true;
+	_assertRoomsById;
+	const usersWithoutId = await config.common.storage.db.users.find({}, { _id: 0, username: 1 });
+	type _assertUsersWithoutId =
+		Exact<(typeof usersWithoutId)[number], Pick<User, 'username'>> extends true ? true : never;
+	const _assertUsersWithoutId: _assertUsersWithoutId = true;
+	_assertUsersWithoutId;
+	const emptyProjection: User[] = await config.common.storage.db.users.find({}, {});
+	emptyProjection;
+	// @ts-expect-error `gcl` was not included in the projection
+	projectedUsers[0].gcl;
 	await config.common.storage.db.users.update({ username: 'User1' }, { $set: { cpu: 100 } });
 	const inserted: User = await config.common.storage.db.users.insert({ username: 'Bot', gcl: 0 });
 	inserted;

@@ -66,13 +66,55 @@ export interface DbFindExOptions {
 	limit?: number;
 }
 
+/** Mongo-style field projection (`1`/`true` include, `0`/`false` exclude). Extra fields are allowed. */
+export type DbProjection<T> = {
+	[K in keyof T]?: 0 | 1 | boolean;
+} & {
+	[field: string]: 0 | 1 | boolean | undefined;
+};
+
+type ProjectionIncludeKeys<P> = {
+	[K in keyof P]-?: P[K] extends 0 | false | undefined ? never : K;
+}[keyof P];
+
+type ProjectionExcludeKeys<P> = {
+	[K in keyof P]-?: P[K] extends 0 | false ? K : never;
+}[keyof P];
+
+/**
+ * Apply a Mongo-style projection to `T`.
+ * Inclusion projections `Pick` those keys (and `_id` unless `_id: 0`/`false`).
+ * Exclusion-only projections `Omit` those keys. Empty `{}` leaves `T` unchanged.
+ * Keys that are not on `T` are dropped from the result type.
+ */
+export type ProjectFromDbProjection<T, P> =
+	[keyof P] extends [never] ? T
+	: [ProjectionIncludeKeys<P>] extends [never] ? Omit<T, Extract<ProjectionExcludeKeys<P>, keyof T>>
+	: T extends unknown ?
+		Pick<
+			T,
+			Extract<
+				'_id' extends ProjectionExcludeKeys<P> ? ProjectionIncludeKeys<P> : ProjectionIncludeKeys<P> | '_id',
+				keyof T
+			>
+		>
+	:	never;
+
 /**
  * RPC wrapper around a LokiJS collection (`@screeps/common/lib/storage.js` `wrapCollection`).
  * Augment to add methods from storage replacements (e.g. screepsmod-mongo).
  */
 export interface DbCollection<T> {
+	find<const Q extends DbQuery<T>, const P extends DbProjection<T>>(
+		query: Q,
+		projection: P
+	): Promise<ProjectFromDbProjection<NarrowFromDbQuery<T, Q>, P>[]>;
 	find<const Q extends DbQuery<T>>(query: Q): Promise<NarrowFromDbQuery<T, Q>[]>;
 	find(query?: DbQuery<T>): Promise<T[]>;
+	findOne<const Q extends DbQuery<T>, const P extends DbProjection<T>>(
+		query: Q,
+		projection: P
+	): Promise<ProjectFromDbProjection<NarrowFromDbQuery<T, Q>, P> | null>;
 	findOne<const Q extends DbQuery<T>>(query: Q): Promise<NarrowFromDbQuery<T, Q> | null>;
 	findOne(query?: DbQuery<T>): Promise<T | null>;
 	by(field: string, value: unknown): Promise<T | undefined>;
