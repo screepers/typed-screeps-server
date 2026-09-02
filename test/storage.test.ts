@@ -105,6 +105,35 @@ async function _dbUsage() {
 		badge: { type: 1, color1: '#000', color2: '#000', color3: '#000', flip: false, param: 0 },
 	});
 	bot;
+	const insertedSource = await config.common.storage.db['rooms.objects'].insert({
+		type: 'source',
+		room: roomName,
+		x: 10,
+		y: 40,
+		energy: 1000,
+	});
+	type _assertInsertedSource = Exact<typeof insertedSource, RawSource> extends true ? true : never;
+	const _assertInsertedSource: _assertInsertedSource = true;
+	_assertInsertedSource;
+	insertedSource.energy;
+	// @ts-expect-error `type: 'creep'` does not return sources
+	const _insertedNotSource: RawSource = await config.common.storage.db['rooms.objects'].insert({
+		type: 'creep',
+		room: roomName,
+		x: 1,
+		y: 1,
+	});
+	_insertedNotSource;
+	async function addRoomObject<const Type extends RawRoomObject['type']>(
+		type: Type,
+		attrs?: Partial<Omit<Extract<RawRoomObject, { type: Type }>, 'type'>>
+	) {
+		return config.common.storage.db['rooms.objects'].insert({ type, room: roomName, x: 0, y: 0, ...attrs });
+	}
+	const addedSource = await addRoomObject('source', { energy: 1000, energyCapacity: 1000 });
+	type _assertAddedSource = Exact<typeof addedSource, RawSource> extends true ? true : never;
+	const _assertAddedSource: _assertAddedSource = true;
+	_assertAddedSource;
 	await config.common.storage.env.get(config.common.storage.env.keys.GAMETIME);
 	await config.common.storage.env.hmget(config.common.storage.env.keys.MEMORY_SEGMENTS + userId, [0, 1]);
 	await config.common.storage.pubsub.subscribe(config.common.storage.pubsub.keys.ROOMS_DONE, (_gameTime) => {});

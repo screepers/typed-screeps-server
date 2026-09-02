@@ -124,8 +124,12 @@ export interface DbCollection<T> {
 	count(query?: DbQuery<T>): Promise<number>;
 	ensureIndex(property: string): Promise<void>;
 	removeWhere(query: DbQuery<T>): Promise<unknown>;
-	insert(docs: Partial<T>[]): Promise<T[]>;
-	insert(doc: Partial<T>): Promise<T>;
+	/**
+	 * Single-doc insert. Payload is query-shaped (extra fields allowed) so a
+	 * generic `type` still type-checks; `type` narrows the return like {@link find}.
+	 */
+	insert<const D extends DbQuery<T>>(doc: D): Promise<NarrowFromDbQuery<T, D>>;
+	insert(docs: DbQuery<T>[]): Promise<T[]>;
 	update(
 		query: DbQuery<T>,
 		update: DbUpdate<T>,
