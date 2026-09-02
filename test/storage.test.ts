@@ -14,11 +14,13 @@ import {
 	RoomName,
 	ServerStorage,
 	User,
+	UserId,
 } from '../src';
 
 declare const config: ServerConfig;
 declare const sandbox: CliSandbox;
 declare const roomName: RoomName;
+declare const userId: UserId;
 
 const _storage: ServerStorage = config.common.storage;
 _storage;
@@ -94,8 +96,34 @@ async function _dbUsage() {
 	await config.common.storage.db.users.update({ username: 'User1' }, { $set: { cpu: 100 } });
 	const inserted: User = await config.common.storage.db.users.insert({ username: 'Bot', gcl: 0 });
 	inserted;
+	const bot: User = await config.common.storage.db.users.insert({
+		username: 'Bot',
+		cpu: 100,
+		cpuAvailable: 10000,
+		gcl: 0,
+		active: 10000,
+		badge: { type: 1, color1: '#000', color2: '#000', color3: '#000', flip: false, param: 0 },
+	});
+	bot;
 	await config.common.storage.env.get(config.common.storage.env.keys.GAMETIME);
+	await config.common.storage.env.hmget(config.common.storage.env.keys.MEMORY_SEGMENTS + userId, [0, 1]);
 	await config.common.storage.pubsub.subscribe(config.common.storage.pubsub.keys.ROOMS_DONE, (_gameTime) => {});
+	const queue = config.common.storage.queue;
+	const queued: string = await queue.fetch('usersIvm');
+	queued;
+	const added: true = await queue.add('usersIvm', 'id');
+	added;
+	const multi: true = await queue.addMulti('usersIvm', ['a', 'b']);
+	multi;
+	await queue.markDone('usersIvm', 'id');
+	await queue.whenAllDone('usersIvm');
+	await queue.reset('usersIvm');
+	const roomQueued: RoomName = await queue.fetch('rooms');
+	roomQueued;
+	// @ts-expect-error `'users'` is a driver alias, not a storage queue
+	queue.fetch('users');
+	// @ts-expect-error storage queue takes the name first
+	queue.whenAllDone();
 }
 
 _dbUsage;

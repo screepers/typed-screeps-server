@@ -7,4 +7,10 @@ mods for the open-source server.
 ## Usage
 
 - `npm i -D typed-screeps-server`, or your preferred package manager stanza
-- add "typed-screeps-server" to your project's `tsconfig.json` `compilerOptions.types` to force the loading of the ambient definitions
+- add `"typed-screeps-server"` to your project's `tsconfig.json` `compilerOptions.types` to force the loading of the ambient `@screeps/*` definitions
+
+The main entry does not load renderer types (they assume a global `PIXI`). Client mods that need `@screeps/renderer` should import the subpath instead:
+
+```ts
+import 'typed-screeps-server/renderer';
+```

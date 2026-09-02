@@ -33,7 +33,10 @@ declare module '@screeps/backend/lib/utils.js' {
 
 declare module '@screeps/common' {
 	export const storage: import('./server/storage').ServerStorage;
-	// export const configManager: typeof import('lib/config-manager');
+	export const configManager: {
+		load(): void;
+		config: import('./server/server').ServerConfig;
+	};
 	// export const rpc: typeof import('lib/rpc');
 	export function findPort(port: any): any;
 	export function encodeTerrain(terrain: any): string;
@@ -136,9 +139,16 @@ declare module '@screeps/driver/history' {
 }
 
 declare module '@screeps/driver/queue' {
-	export function create(name: string): any;
-	export function resetAll(): any;
-	export function createDoneListener(name: any, fn: any): void;
+	export function create<N extends import('./server/driver').DriverQueueName>(
+		name: N,
+		_usage?: 'read' | 'write'
+	): import('./server/driver').DriverQueue<import('./server/driver').DriverQueueItem<N>>;
+	export function resetAll(): Promise<true[]>;
+	/**
+	 * Subscribes to `queueDone:${name}`. Does not remap `'users'` → `'usersIvm'`;
+	 * `whenAllDone` publishes the storage name, so pass `usersIvm` not `users`.
+	 */
+	export function createDoneListener(name: import('./server/storage').StorageQueueName, fn: (data: any) => void): void;
 }
 
 declare module '@screeps/driver' {
@@ -182,7 +192,7 @@ declare module '@screeps/driver' {
 	export function sendConsoleMessages(userId: UserId, messages: any): any;
 	export function sendConsoleError(userId: UserId, error: any): any;
 	export function getGameTime(): Promise<number>;
-	export function incrementGameTime(): Promise<void>;
+	export function incrementGameTime(): Promise<number>;
 	export function getRoomInfo(roomId: RoomName): Promise<_Room>;
 	export function saveRoomInfo(roomId: RoomName, roomInfo: Partial<_Room>): Promise<void>;
 	export function getInterRoom(): Promise<
@@ -219,8 +229,7 @@ declare module '@screeps/driver' {
 	export function saveRoomEventLog(roomId: RoomName, eventLog: any): any;
 	export const makeRuntime: (userId: UserId) => Promise<any>;
 	export const history: typeof import('@screeps/driver/history');
-	// namespace engine {}
+	export const config: import('./server/engine').ServerEngine;
+	export const queue: typeof import('@screeps/driver/queue');
 	export function getAllTerrainData(): any;
-	// import queue = require('@screeps/driver/queue');
-	// export { engine as config, queue, unknown as constants, unknown as strongholds, unknown as system };
 }

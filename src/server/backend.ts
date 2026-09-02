@@ -1,4 +1,3 @@
-import { ObjectMetadata } from '@screeps/renderer';
 import { EventEmitter } from '../event-emitter';
 import { RawUserNotification } from '../objects/objects';
 import { User } from '../objects/users';
@@ -26,7 +25,8 @@ export interface ServerBackend extends EventEmitter<BackendEvents> {
 	historyChunkSize: number;
 	renderer: {
 		resources: Record<string, string>;
-		metadata: Record<string, ObjectMetadata>;
+		/** Full `ObjectMetadata` is on the `typed-screeps-server/renderer` subpath. */
+		metadata: Record<string, object>;
 	};
 	features?: { name: string; version: number; [key: string]: any }[];
 }

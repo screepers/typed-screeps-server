@@ -1,4 +1,5 @@
 import { EventEmitter } from '../event-emitter';
+import type { NamedQueue } from '../queue';
 import {
 	RawLeaderboard,
 	RawMarketOrder,
@@ -15,7 +16,7 @@ import {
 	RawUserResource,
 } from '../objects/objects';
 import { RawPowerCreep, RawRoomObject } from '../objects/raw_objects';
-import { Room, RoomTerrain } from '../objects/rooms';
+import { Room, RoomName, RoomTerrain } from '../objects/rooms';
 import { User } from '../objects/users';
 
 /** LokiJS/Mongo-style query. Operators (`$and`, `$in`, `$ne`, …) and extra fields are allowed. */
@@ -190,7 +191,7 @@ export interface StorageEnv {
 	expire(key: string, seconds: number): Promise<void>;
 	ttl(key: string): Promise<number>;
 	del(key: string): Promise<number>;
-	hmget(name: string, fields: string[]): Promise<any[]>;
+	hmget(name: string, fields: (string | number)[]): Promise<any[]>;
 	hmset(name: string, data: object): Promise<any>;
 	hget(name: string, field: string | number): Promise<any>;
 	hset(name: string, field: string | number, value: any): Promise<any>;
@@ -211,14 +212,20 @@ export interface StoragePubsub {
 	subscribe(channel: string, cb: (data: any) => void): void;
 }
 
-export interface StorageQueue {
-	fetch(name: string): Promise<any>;
-	add(name: string, id: any): Promise<any>;
-	addMulti(name: string, ids: any[]): Promise<any>;
-	markDone(name: string, id: any): Promise<any>;
-	whenAllDone(name: string): Promise<any>;
-	reset(name: string): Promise<any>;
+/**
+ * Queues created in `storage/lib/queue.js`. Unknown names throw.
+ * Augment to type queues a storage replacement registers.
+ */
+export interface StorageQueueNames {
+	usersLegacy: string;
+	usersIvm: string;
+	rooms: RoomName;
 }
+
+export type StorageQueueName = keyof StorageQueueNames;
+
+/** RPC queue client (`common.storage.queue`). Methods take the queue name first. */
+export interface StorageQueue extends NamedQueue<StorageQueueNames> {}
 
 /**
  * `@screeps/common` storage client (`config.common.storage` and CLI `sandbox.storage`).

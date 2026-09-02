@@ -1,5 +1,4 @@
 import './modules';
-import './renderer';
 export * from './admin-utils';
 export * from './event-emitter';
 export * from './objects/action_log';

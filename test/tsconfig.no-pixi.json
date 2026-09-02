@@ -1,0 +1,12 @@
+{
+	"compilerOptions": {
+		"module": "esnext",
+		"moduleResolution": "bundler",
+		"target": "es2017",
+		"strict": true,
+		"noEmit": true,
+		"skipLibCheck": false,
+		"types": ["node", "screeps"]
+	},
+	"files": ["./no-pixi/barrel.ts"]
+}

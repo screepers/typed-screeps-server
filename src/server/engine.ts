@@ -115,12 +115,18 @@ export interface RegisterCustomObjectPrototypeOptions<
 export interface ServerEngine extends EventEmitter<EngineEvents> {
 	driver: ServerDriver;
 	customIntentTypes: Record<IntentName, { [keyName: string]: IntentTransform }>;
-	registerCustomObjectPrototype: <
-		TRaw extends RawRoomObject,
-		TGame extends GameOf<TRaw> = GameOf<TRaw>,
-	>(
+	registerCustomObjectPrototype: <TRaw extends RawRoomObject, TGame extends GameOf<TRaw> = GameOf<TRaw>>(
 		objectType: TRaw['type'],
 		name: string,
 		opts: RegisterCustomObjectPrototypeOptions<TRaw, TGame>
 	) => void;
+	mainLoopMinDuration: number;
+	mainLoopResetInterval: number;
+	mainLoopCustomStage(): Promise<any>;
+	cpuMaxPerTick: number;
+	cpuBucketSize: number;
+	historyChunkSize: number;
+	useSigintTimeout: boolean;
+	reportMemoryUsageInterval: number;
+	enableInspector: boolean;
 }
