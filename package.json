@@ -1,6 +1,6 @@
 {
 	"name": "typed-screeps-server",
-	"version": "0.0.5",
+	"version": "0.0.6",
 	"description": "Typescript types for the Screeps private server",
 	"types": "./dist/index.d.ts",
 	"exports": {
