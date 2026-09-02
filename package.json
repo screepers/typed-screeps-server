@@ -61,11 +61,11 @@
 		"q": "^1.5.1"
 	},
 	"peerDependencies": {
-		"@types/express": "*",
-		"@types/pixi.js": "*",
-		"@types/q": "*",
-		"@types/screeps": "*",
-		"isolated-vm": "*"
+		"@types/express": "^4.11.1",
+		"@types/pixi.js": "^4.8.9",
+		"@types/q": "^1.5.8",
+		"@types/screeps": "^3.3.8",
+		"isolated-vm": "^6.0.2"
 	},
 	"peerDependenciesMeta": {
 		"@types/express": {
