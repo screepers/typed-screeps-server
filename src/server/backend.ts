@@ -28,5 +28,5 @@ export interface ServerBackend extends EventEmitter<BackendEvents> {
 		/** Full `ObjectMetadata` is on the `typed-screeps-server/renderer` subpath. */
 		metadata: Record<string, object>;
 	};
-	features?: { name: string; version: number; [key: string]: any }[];
+	features?: { name: string; version: string | number; [key: string]: any }[];
 }
