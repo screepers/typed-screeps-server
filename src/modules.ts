@@ -134,6 +134,128 @@ declare module '@screeps/engine/src/utils.js' {
 	export function getReactionVariants(compound: any): string[][];
 }
 
+declare module '@screeps/engine/src/processor/common/fake-runtime.js' {
+	type RawCreep = import('./objects/raw_objects').RawCreep;
+	type RawRoomObject = import('./objects/raw_objects').RawRoomObject;
+
+	/** `{x,y,room}` origin used by path helpers (raw objects, not player `RoomPosition`). */
+	export interface PathOrigin {
+		x: number;
+		y: number;
+		room: RoomName;
+		user?: UserId;
+	}
+
+	/**
+	 * Processor `scope` fields this module reads.
+	 * `processor.js` unwraps terrain first, so `roomTerrain` is the encoded 2500-char string.
+	 */
+	export interface FakeRuntimeScope {
+		roomObjects: Record<string, RawRoomObject>;
+		roomTerrain: string;
+		bulk: import('./bulk').BulkCollection<RawRoomObject>;
+		gameTime: number;
+	}
+
+	/** Processor-side `RoomPosition` (`roomName`); not `objects/rooms` `{x,y,room}`. */
+	export class RoomPosition {
+		x: number;
+		y: number;
+		roomName: RoomName;
+		constructor(x: number, y: number, roomName: RoomName);
+		isEqualTo(p: { x: number; y: number; roomName: string }): boolean;
+		getRangeTo(p: { x: number; y: number; roomName: string }): number;
+		getDirectionTo(p: { x: number; y: number; roomName: string }): DirectionConstant | undefined;
+		lookFor(type: LOOK_TERRAIN): Terrain | Terrain[];
+		lookFor(type: LookConstant | string): Terrain | Terrain[] | null;
+		sPackLocal(): string;
+		static sUnpackLocal(packed: string, roomName: RoomName): RoomPosition;
+	}
+
+	/** Processor-side cost matrix; no `serialize` / `deserialize`. */
+	export class CostMatrix {
+		_bits: Uint8Array;
+		constructor();
+		set(xx: number, yy: number, val: number): void;
+		get(xx: number, yy: number): number;
+		clone(): CostMatrix;
+	}
+
+	export interface PathOpts {
+		ignoreDestructibleStructures?: boolean;
+		ignoreCreeps?: boolean;
+		ignoreRoads?: boolean;
+		reusePath?: number;
+		range?: number;
+		flee?: boolean;
+		maxRooms?: number;
+		plainCost?: number;
+		swampCost?: number;
+		maxOps?: number;
+		maxCost?: number;
+		heuristicWeight?: number;
+		costCallback?: (roomName: RoomName, costMatrix: CostMatrix) => CostMatrix | void;
+	}
+
+	export type PathGoal =
+		| RoomPosition
+		| { pos: RoomPosition; range: number }
+		| (RoomPosition | { pos: RoomPosition; range: number })[];
+
+	export interface PathFinderResult {
+		path: RoomPosition[];
+		ops: number;
+		cost: number;
+		incomplete: boolean;
+	}
+
+	/** Pretick `intents.set`; object id is the list key, so `move` payloads omit `id`. */
+	export interface FakeRuntimeIntents {
+		set(id: import('./types').RawId<RawCreep>, name: 'move', data: { direction: DirectionConstant }): void;
+	}
+
+	export interface WalkContext {
+		scope: FakeRuntimeScope;
+		intents: FakeRuntimeIntents;
+	}
+
+	export function findPath(
+		source: PathOrigin,
+		target: PathGoal,
+		opts: PathOpts | null | undefined,
+		scope: FakeRuntimeScope
+	): PathFinderResult;
+	export function findClosestByPath<T extends PathOrigin>(
+		fromPos: PathOrigin,
+		objects: T[],
+		opts: PathOpts | null | undefined,
+		scope: FakeRuntimeScope
+	): T | null;
+	export function moveTo(
+		creep: RawCreep,
+		target: PathOrigin,
+		opts: PathOpts | null | undefined,
+		scope: FakeRuntimeScope
+	): DirectionConstant | 0;
+	export function walkTo(
+		creep: RawCreep,
+		target: PathOrigin,
+		opts: PathOpts | null | undefined,
+		context: WalkContext
+	): DirectionConstant | 0 | undefined;
+	export function flee(
+		creep: PathOrigin,
+		hostiles: PathOrigin[],
+		range: number,
+		opts: PathOpts | null | undefined,
+		scope: FakeRuntimeScope
+	): DirectionConstant | 0;
+	export function hasActiveBodyparts(
+		creep: { body?: Pick<BodyPartDefinition, 'hits' | 'type'>[] },
+		part: BodyPartConstant
+	): boolean;
+}
+
 declare module '@screeps/driver/history' {
 	export function saveTick(roomId: RoomName, gameTime: number, data: any): any;
 	export function upload(roomId: RoomName, baseTime: number): any;

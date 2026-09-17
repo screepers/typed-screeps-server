@@ -75,6 +75,16 @@ export interface RawCreep extends RawObject {
 	tombstoneDecay?: number;
 	/** Set by invader generation; processor replaces this with `ageTime`. */
 	ticksToLive?: number;
+	/** Packed path cache written by processor `fake-runtime` `moveTo` / `walkTo`. */
+	memory_move?: CreepMemoryMove | null;
+}
+
+/** Stored on NPC creeps by `@screeps/engine/src/processor/common/fake-runtime.js`. */
+export interface CreepMemoryMove {
+	dest?: string | null;
+	path?: string | null;
+	time?: number | null;
+	lastMove?: number | null;
 }
 
 export interface RawPowerCreep extends RawObject {
