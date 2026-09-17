@@ -1,5 +1,6 @@
 type User = import('./objects/users').User;
 type UserId = import('./objects/users').UserId;
+type Coord = import('./objects/rooms').Coord;
 type _RoomPosition = import('./objects/rooms').RoomPosition;
 type RoomName = import('./objects/rooms').RoomName;
 type _Room = import('./objects/rooms').Room;
@@ -123,7 +124,7 @@ declare module '@screeps/engine/src/utils.js' {
 		basePower: any,
 		withoutOldHits?: boolean
 	): number;
-	export function dist(a: { pos: _RoomPosition } | _RoomPosition, b: { pos: _RoomPosition } | _RoomPosition): number;
+	export function dist(a: Coord | { pos: Coord }, b: Coord | { pos: Coord }): number;
 	export function calcRoomsDistance(room1: RoomName, room2: RoomName, continuous?: boolean): number;
 	export function calcTerminalEnergyCost(amount: any, range: any): number;
 	export function calcNeededGcl(gclLevel: number): number;
