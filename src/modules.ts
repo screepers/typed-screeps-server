@@ -164,10 +164,12 @@ declare module '@screeps/driver' {
 	export function getAllRoomsNames(): Promise<RoomName[]>;
 	export function activateRoom(room: RoomName): any;
 	export function saveUserIntents(userId: any, intents: any): any;
-	export function getRoomIntents(roomId: RoomName): import('./objects/intents').RoomIntent;
-	export function getRoomObjects(roomId: RoomName): import('./objects/raw_objects').RawRoomObject[];
-	export function getRoomFlags(roomId: RoomName): import('./objects/objects').RawRoomFlags[];
-	export function getRoomTerrain(roomId: RoomName): import('./objects/rooms').RoomTerrain;
+	export function getRoomIntents(roomId: RoomName): Promise<import('./objects/objects').RawRoomIntents | null>;
+	export function getRoomObjects(
+		roomId: RoomName
+	): Promise<{ objects: Record<string, import('./objects/raw_objects').RawRoomObject>; users: Record<string, User> }>;
+	export function getRoomFlags(roomId: RoomName): Promise<import('./objects/objects').RawRoomFlags[]>;
+	export function getRoomTerrain(roomId: RoomName): Promise<Record<string, import('./objects/rooms').RoomTerrain>>;
 	export function bulkObjectsWrite(): import('./bulk').BulkCollection<import('./objects/raw_objects').RawRoomObject>;
 	export function bulkFlagsWrite(): import('./bulk').BulkCollection<import('./objects/objects').RawRoomFlags>;
 	export function bulkUsersWrite(): import('./bulk').BulkCollection<import('./objects/users').User>;

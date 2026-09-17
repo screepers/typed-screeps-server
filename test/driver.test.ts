@@ -1,4 +1,4 @@
-import { RoomName, ServerStorage } from '../src';
+import { RawRoomIntents, RawRoomObject, RoomName, ServerStorage, User } from '../src';
 import * as common from '@screeps/common';
 import * as driver from '@screeps/driver';
 
@@ -29,6 +29,14 @@ async function _driverUsage() {
 	await driver.config.mainLoopCustomStage();
 	const gameTime = await driver.incrementGameTime();
 	await driver.notifyRoomsDone(gameTime);
+
+	const intents: RawRoomIntents | null = await driver.getRoomIntents(roomId);
+	intents;
+	const roomObjects = await driver.getRoomObjects(roomId);
+	const objects: Record<string, RawRoomObject> = roomObjects.objects;
+	objects;
+	const users: Record<string, User> = roomObjects.users;
+	users;
 }
 
 _driverUsage;
