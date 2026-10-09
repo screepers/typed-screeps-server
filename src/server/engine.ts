@@ -32,15 +32,73 @@ export interface MapView {
 	k: [];
 }
 
+export interface RunnerRunResult {
+	error?: string;
+	username?: string;
+	type?: 'done' | 'error';
+	usedTime?: number;
+	usedCleanTime?: number;
+	usedDirtyTime?: number;
+	memory?: { data?: string };
+	console?: { log?: any; results?: any };
+	memorySegments?: Record<string, string>;
+	intents?: any;
+	intentsList?: any;
+	intentsCpu?: number;
+	interShardSegment?: any;
+	visual?: Record<string, string>;
+	activeSegments?: number[];
+	activeForeignSegment?: { username: string; id?: number; user_id?: string } | null;
+	defaultPublicSegment?: number | null;
+	publicSegments?: string;
+}
+
+export type MainLoopStage =
+	| 'start'
+	| 'getUsers'
+	| 'addUsersToQueue'
+	| 'waitForUsers'
+	| 'getRooms'
+	| 'addRoomsToQueue'
+	| 'waitForRooms'
+	| 'commit1'
+	| 'global'
+	| 'commit2'
+	| 'incrementGameTime'
+	| 'notifyRoomsDone'
+	| 'custom'
+	| 'finish';
+
+export type RunnerLoopStage = 'start' | 'runUser' | 'saveResultStart' | 'saveResultFinish' | 'finish';
+
+export type ProcessorLoopStage = 'start' | 'getRoomData' | 'processRoom' | 'saveRoom' | 'finish';
+
 export interface EngineEvents {
 	saveRoomHistory: (roomId: RoomName, baseTime: number, result: any) => void;
 	init: (processType: 'main' | 'processor' | 'runner') => void;
 	playerSandbox: (sandbox: UserSandbox, userId: UserId) => void;
-	processorLoopStage:
-		| ((stage: 'start') => void)
-		| ((stage: 'getRoomData', roomId: RoomName) => void)
-		| ((stage: 'processRoom', roomId: string) => void)
-		| ((stage: 'finish', roomId: string) => void);
+	mainLoopStage: (
+		...args:
+			| [stage: Exclude<MainLoopStage, 'addUsersToQueue' | 'addRoomsToQueue'>]
+			| [stage: 'addUsersToQueue', users: User[]]
+			| [stage: 'addRoomsToQueue', rooms: RoomName[]]
+	) => void;
+	runnerLoopStage: (
+		...args:
+			| [stage: 'start']
+			| [stage: 'runUser', userId: UserId]
+			| [stage: 'saveResultStart', runResult: RunnerRunResult]
+			| [stage: 'saveResultFinish', runResult: RunnerRunResult]
+			| [stage: 'finish', userId: UserId | undefined]
+	) => void;
+	processorLoopStage: (
+		...args:
+			| [stage: 'start']
+			| [stage: 'getRoomData', roomId: RoomName]
+			| [stage: 'processRoom', roomId: RoomName]
+			| [stage: 'saveRoom', roomId: RoomName]
+			| [stage: 'finish', roomId: RoomName | undefined]
+	) => void;
 	preProcessObjectIntents<T extends RawRoomObject>(
 		object: T,
 		userId: UserId,
